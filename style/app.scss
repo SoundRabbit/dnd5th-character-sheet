@@ -4,12 +4,9 @@
     display: grid;
     grid-template-rows: 4rem 1fr;
     grid-template-columns: 55vh 1fr;
-    background-color: #2C7B8C;
-    column-gap: 0.2rem;
-    row-gap: 0.3rem;
 
     &__left-menu {
-        background-color: #fff;
+        background-color: #2C7B8C;
     }
 
     &__right-menu {
@@ -17,8 +14,9 @@
     }
 
     &__left {
-        background-color: #fff;
+        background-color: #2C7B8C;
         overflow-y: scroll;
+        color: #fff;
     }
 
     &__right {
