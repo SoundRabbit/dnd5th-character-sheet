@@ -1,7 +1,9 @@
 @import "app";
 @import "common-data";
 @import "key-value";
+@import "select";
 
 * {
     overflow: hidden;
+    box-sizing: border-box;
 }

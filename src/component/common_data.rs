@@ -1,4 +1,4 @@
-use super::key_value;
+use super::select;
 use crate::model::Character;
 use crate::util::prop::R;
 use kagura::prelude::*;
@@ -40,16 +40,24 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
 fn render(state: &State, _: Vec<Html>) -> Html {
     let character: &Character = &(*state.character.borrow());
 
-    Html::div(
+    Html::form(
         Attributes::new().class("pure-form").class("common-data"),
         Events::new(),
-        vec![Html::component(
-            key_value::new().with(key_value::Props {}),
+        vec![Html::div(
+            Attributes::new().class("common-data__name-and-race"),
+            Events::new(),
             vec![
                 Html::text("キャラクター名"),
                 Html::input(
                     Attributes::new().value(&character.name),
                     Events::new(),
+                    vec![],
+                ),
+                Html::text("種族"),
+                Html::component(
+                    select::new().with(select::Props {
+                        option: vec![String::from("エルフ")],
+                    }),
                     vec![],
                 ),
             ],

@@ -1,3 +1,13 @@
 .common-data {
     width: 100%;
+    padding: 0.3rem;
+
+    &__name-and-race {
+        display: grid;
+        grid-template-rows: max-content max-content;
+        grid-template-columns: 1fr max-content;
+        grid-auto-flow: column;
+        row-gap: 0.2rem;
+        column-gap: 0.3rem;
+    }
 }
