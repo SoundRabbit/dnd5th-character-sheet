@@ -1,17 +1,17 @@
 use crate::util::prop::C;
 
 pub struct Character {
-    name: String,
-    status: Status,
+    pub name: String,
+    pub status: Status,
 }
 
 pub struct Status {
-    strength: u32,
-    dexterity: u32,
-    constitution: u32,
-    intelligence: u32,
-    wisdom: u32,
-    charisma: u32,
+    pub strength: u32,
+    pub dexterity: u32,
+    pub constitution: u32,
+    pub intelligence: u32,
+    pub wisdom: u32,
+    pub charisma: u32,
 }
 
 pub enum StatusItem {

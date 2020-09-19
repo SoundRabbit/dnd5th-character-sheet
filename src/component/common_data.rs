@@ -1,3 +1,4 @@
+use super::key_value;
 use crate::model::Character;
 use crate::util::prop::R;
 use kagura::prelude::*;
@@ -36,10 +37,22 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     Cmd::none()
 }
 
-fn render(state: &State, children: Vec<Html>) -> Html {
+fn render(state: &State, _: Vec<Html>) -> Html {
+    let character: &Character = &(*state.character.borrow());
+
     Html::div(
         Attributes::new().class("pure-form").class("common-data"),
         Events::new(),
-        vec![],
+        vec![Html::component(
+            key_value::new().with(key_value::Props {}),
+            vec![
+                Html::text("キャラクター名"),
+                Html::input(
+                    Attributes::new().value(&character.name),
+                    Events::new(),
+                    vec![],
+                ),
+            ],
+        )],
     )
 }

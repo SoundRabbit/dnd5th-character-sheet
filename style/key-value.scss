@@ -1,0 +1,8 @@
+.key-value {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+    column-gap: 0.2rem;
+    row-gap: 0.3rem;
+    padding: 0.3rem;
+}
