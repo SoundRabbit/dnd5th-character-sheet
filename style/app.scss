@@ -1,0 +1,28 @@
+.app {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 4rem 1fr;
+    grid-template-columns: 55vh 1fr;
+    background-color: #2C7B8C;
+    column-gap: 0.2rem;
+    row-gap: 0.3rem;
+
+    &__left-menu {
+        background-color: #fff;
+    }
+
+    &__right-menu {
+        background-color: #fff;
+    }
+
+    &__left {
+        background-color: #fff;
+        overflow-y: scroll;
+    }
+
+    &__right {
+        background-color: #fff;
+        overflow-x: scroll;
+    }
+}

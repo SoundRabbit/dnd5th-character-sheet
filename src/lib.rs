@@ -1,11 +1,13 @@
 extern crate kagura;
 extern crate wasm_bindgen;
 
-mod page;
+mod component;
+mod model;
+mod util;
 
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
 pub fn main() {
-    kagura::run(page::index::new().with(page::index::Props {}), "app");
+    kagura::run(component::app::new().with(component::app::Props {}), "app");
 }

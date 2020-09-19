@@ -1,2 +1,2 @@
-import "../style/index.scss";
+import "../style/mod.scss";
 import("../pkg");
