@@ -1,3 +1,5 @@
+use super::key_value;
+use super::select;
 use kagura::prelude::*;
 
 pub struct Props {}
@@ -26,10 +28,35 @@ fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
     Cmd::none()
 }
 
-fn render(_: &State, children: Vec<Html>) -> Html {
+fn render(_: &State, _: Vec<Html>) -> Html {
     Html::div(
-        Attributes::new().class("key-value"),
+        Attributes::new().class("pure-form").class("experience"),
         Events::new(),
-        children,
+        vec![Html::component(
+            key_value::new().with(key_value::Props {}),
+            vec![
+                Html::text("初期クラス"),
+                Html::component(
+                    select::new().with(select::Props {
+                        suid: crate::suid!(),
+                        option: vec![
+                            String::from("ウィザード"),
+                            String::from("ウォーロック"),
+                            String::from("クレリック"),
+                            String::from("ソーサラー"),
+                            String::from("ドルイド"),
+                            String::from("バード"),
+                            String::from("バーバリアン"),
+                            String::from("パラディン"),
+                            String::from("ファイター"),
+                            String::from("モンク"),
+                            String::from("レンジャー"),
+                            String::from("ローグ"),
+                        ],
+                    }),
+                    vec![],
+                ),
+            ],
+        )],
     )
 }

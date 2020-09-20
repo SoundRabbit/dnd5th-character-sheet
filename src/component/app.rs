@@ -1,4 +1,5 @@
 use super::common_data;
+use super::experience;
 use super::function::text;
 use crate::model::{character, Character};
 use crate::util::prop::C;
@@ -57,7 +58,14 @@ fn render(state: &State, children: Vec<Html>) -> Html {
                 Events::new(),
                 vec![
                     right_menu(text::div("経験点"), text::div("0点")),
-                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+                    Html::div(
+                        Attributes::new().class("app__right"),
+                        Events::new(),
+                        vec![Html::component(
+                            experience::new().with(experience::Props {}),
+                            vec![],
+                        )],
+                    ),
                     right_menu(text::div("アイテム/所持金"), text::div("0gp")),
                     Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
                     right_menu(text::div("ウィザード"), text::div("1Lv")),

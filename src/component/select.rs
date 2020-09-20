@@ -1,4 +1,3 @@
-use crate::util::luid;
 use kagura::prelude::*;
 
 pub struct Props {
