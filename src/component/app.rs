@@ -42,11 +42,6 @@ fn render(state: &State, children: Vec<Html>) -> Html {
                 vec![],
             ),
             Html::div(
-                Attributes::new().class("app__right-menu"),
-                Events::new(),
-                vec![],
-            ),
-            Html::div(
                 Attributes::new().class("app__left"),
                 Events::new(),
                 vec![Html::component(
@@ -56,7 +51,30 @@ fn render(state: &State, children: Vec<Html>) -> Html {
                     vec![],
                 )],
             ),
-            Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+            Html::div(
+                Attributes::new().class("app__scroll"),
+                Events::new(),
+                vec![
+                    Html::div(
+                        Attributes::new().class("app__right-menu"),
+                        Events::new(),
+                        vec![],
+                    ),
+                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+                    Html::div(
+                        Attributes::new().class("app__right-menu"),
+                        Events::new(),
+                        vec![],
+                    ),
+                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+                    Html::div(
+                        Attributes::new().class("app__right-menu"),
+                        Events::new(),
+                        vec![],
+                    ),
+                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+                ],
+            ),
         ],
     )
 }

@@ -45,7 +45,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
         Events::new(),
         vec![
             Html::div(
-                Attributes::new().class("common-data__name-and-race"),
+                Attributes::new().class("common-data__top"),
                 Events::new(),
                 vec![
                     Html::text("キャラクター名"),
@@ -54,7 +54,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         Events::new(),
                         vec![],
                     ),
-                    Html::text("種族"),
+                    Html::text("属性"),
                     Html::component(
                         select::new().with(select::Props {
                             option: vec![String::from("エルフ")],

@@ -4,13 +4,10 @@
     display: grid;
     grid-template-rows: 4rem 1fr;
     grid-template-columns: minmax(30rem, 55vh) 1fr;
+    grid-auto-flow: column;
 
     &__left-menu {
         background-color: #2C7B8C;
-    }
-
-    &__right-menu {
-        background-color: #fff;
     }
 
     &__left {
@@ -19,8 +16,23 @@
         color: #fff;
     }
 
+    &__scroll {
+        grid-row-start: 1;
+        grid-row-end: -1;
+        display: grid;
+        grid-template-rows: 4rem 1fr;
+        grid-auto-columns: minmax(20rem, 1fr);
+        grid-auto-flow: column;
+        overflow-x: scroll;
+        background-color: #5AC2D9;
+        column-gap: 0.3rem;
+    }
+
+    &__right-menu {
+        background-color: #fff;
+    }
+
     &__right {
         background-color: #fff;
-        overflow-x: scroll;
     }
 }
