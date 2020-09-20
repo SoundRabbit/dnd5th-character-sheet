@@ -2,6 +2,7 @@ use crate::util::luid;
 use kagura::prelude::*;
 
 pub struct Props {
+    pub suid: u64,
     pub option: Vec<String>,
 }
 
@@ -26,7 +27,7 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
         state
     } else {
         State {
-            id: String::from("select__") + &luid::new().to_string(),
+            id: String::from("select__") + &props.suid.to_string(),
             option: vec![],
             manual: None,
         }

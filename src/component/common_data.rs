@@ -66,6 +66,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::text("種族"),
                     Html::component(
                         select::new().with(select::Props {
+                            suid: crate::suid!(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],
@@ -73,6 +74,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::text("サイズ"),
                     Html::component(
                         select::new().with(select::Props {
+                            suid: crate::suid!(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],
@@ -80,6 +82,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::text("属性"),
                     Html::component(
                         select::new().with(select::Props {
+                            suid: crate::suid!(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],
