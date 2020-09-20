@@ -19,7 +19,7 @@ struct State {
 
 enum Msg {}
 
-fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
+fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
         character: C::new(Character::new()),
     };
@@ -29,11 +29,11 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
     (state, cmd, batch)
 }
 
-fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
+fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
     Cmd::none()
 }
 
-fn render(state: &State, children: Vec<Html>) -> Html {
+fn render(state: &State, _: Vec<Html>) -> Html {
     Html::div(
         Attributes::new().class("app"),
         Events::new(),
@@ -57,7 +57,7 @@ fn render(state: &State, children: Vec<Html>) -> Html {
                 Attributes::new().class("app__scroll"),
                 Events::new(),
                 vec![
-                    right_menu(text::div("経験点"), text::div("0点")),
+                    right_menu(text::div("経験点/成長"), text::div("0点")),
                     Html::div(
                         Attributes::new().class("app__right"),
                         Events::new(),
