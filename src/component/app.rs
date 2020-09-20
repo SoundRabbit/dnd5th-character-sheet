@@ -1,6 +1,7 @@
 use super::common_data;
 use super::experience;
 use super::function::text;
+use super::item;
 use crate::model::{character, Character};
 use crate::util::prop::C;
 use kagura::prelude::*;
@@ -66,8 +67,12 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                             vec![],
                         )],
                     ),
-                    right_menu(text::div("アイテム/所持金"), text::div("0gp")),
-                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
+                    right_menu(text::div("所持金/装備"), text::div("0gp")),
+                    Html::div(
+                        Attributes::new().class("app__right"),
+                        Events::new(),
+                        vec![Html::component(item::new().with(item::Props {}), vec![])],
+                    ),
                     right_menu(text::div("ウィザード"), text::div("1Lv")),
                     Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
                 ],
