@@ -24,12 +24,19 @@
         grid-auto-columns: minmax(20rem, 1fr);
         grid-auto-flow: column;
         overflow-x: scroll;
-        background-color: #5AC2D9;
+        background-color: #2C7B8C;
         column-gap: 0.3rem;
     }
 
     &__right-menu {
-        background-color: #fff;
+        color: #fff;
+        background-color: #2C7B8C;
+        padding: 0.3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.5rem;
+        line-height: 1.5;
     }
 
     &__right {

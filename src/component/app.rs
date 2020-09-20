@@ -1,4 +1,5 @@
 use super::common_data;
+use super::function::text;
 use crate::model::{character, Character};
 use crate::util::prop::C;
 use kagura::prelude::*;
@@ -55,26 +56,22 @@ fn render(state: &State, children: Vec<Html>) -> Html {
                 Attributes::new().class("app__scroll"),
                 Events::new(),
                 vec![
-                    Html::div(
-                        Attributes::new().class("app__right-menu"),
-                        Events::new(),
-                        vec![],
-                    ),
+                    right_menu(text::div("経験点"), text::div("0点")),
                     Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
-                    Html::div(
-                        Attributes::new().class("app__right-menu"),
-                        Events::new(),
-                        vec![],
-                    ),
+                    right_menu(text::div("アイテム/所持金"), text::div("0gp")),
                     Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
-                    Html::div(
-                        Attributes::new().class("app__right-menu"),
-                        Events::new(),
-                        vec![],
-                    ),
+                    right_menu(text::div("ウィザード"), text::div("1Lv")),
                     Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
                 ],
             ),
         ],
+    )
+}
+
+fn right_menu(right: Html, left: Html) -> Html {
+    Html::div(
+        Attributes::new().class("app__right-menu"),
+        Events::new(),
+        vec![right, left],
     )
 }
