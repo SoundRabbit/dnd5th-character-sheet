@@ -1,3 +1,4 @@
+use super::key_value;
 use super::select;
 use crate::model::Character;
 use crate::util::prop::R;
@@ -95,6 +96,98 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             ),
             Html::h2(Attributes::new(), Events::new(), vec![Html::text("能力値")]),
             grid_status(),
+            Html::h2(
+                Attributes::new(),
+                Events::new(),
+                vec![Html::text("セーヴィングスロウ")],
+            ),
+            grid_saving(),
+            Html::div(
+                Attributes::new().class("common-data__list"),
+                Events::new(),
+                vec![
+                    Html::h2(
+                        Attributes::new(),
+                        Events::new(),
+                        vec![Html::text("イニシアチブ")],
+                    ),
+                    Html::component(
+                        key_value::new().with(key_value::Props {}),
+                        vec![
+                            Html::text("能力値修正"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("その他修正"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("イニシアチブ"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                        ],
+                    ),
+                    Html::h2(Attributes::new(), Events::new(), vec![Html::text("AC")]),
+                    Html::component(
+                        key_value::new().with(key_value::Props {}),
+                        vec![
+                            Html::text("基本"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("能力値修正"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("防具"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("盾"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("その他修正"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("AC"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                        ],
+                    ),
+                ],
+            ),
+            Html::div(
+                Attributes::new().class("common-data__list"),
+                Events::new(),
+                vec![
+                    Html::h2(
+                        Attributes::new(),
+                        Events::new(),
+                        vec![Html::text("移動速度")],
+                    ),
+                    Html::component(
+                        key_value::new().with(key_value::Props {}),
+                        vec![
+                            Html::text("基本"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("防具"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("アイテム"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("その他修正"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("移動速度"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                        ],
+                    ),
+                    Html::h2(
+                        Attributes::new(),
+                        Events::new(),
+                        vec![Html::text("ヒットポイント")],
+                    ),
+                    Html::component(
+                        key_value::new().with(key_value::Props {}),
+                        vec![
+                            Html::text("Lv1時"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("成長"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("最大HP"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("現在HP"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::text("ヒットダイス"),
+                            Html::input(Attributes::new(), Events::new(), vec![]),
+                        ],
+                    ),
+                ],
+            ),
             Html::h2(Attributes::new(), Events::new(), vec![Html::text("技能")]),
             grid_skill(),
         ],
@@ -173,6 +266,50 @@ fn input_status(value: u32, is_readonly: bool) -> Html {
         attrs.type_("number").value(value.to_string()),
         Events::new(),
         vec![],
+    )
+}
+
+fn grid_saving() -> Html {
+    Html::div(
+        Attributes::new().class("common-data__status-grid"),
+        Events::new(),
+        vec![
+            text(""),
+            text("筋力"),
+            text("敏捷力"),
+            text("耐久力"),
+            text("知力"),
+            text("判断力"),
+            text("魅力"),
+            text("能力値修正"),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            text("習熟"),
+            input_skill_expert(false),
+            input_skill_expert(false),
+            input_skill_expert(false),
+            input_skill_expert(false),
+            input_skill_expert(false),
+            input_skill_expert(false),
+            text("その他修正"),
+            input_status(0, false),
+            input_status(0, false),
+            input_status(0, false),
+            input_status(0, false),
+            input_status(0, false),
+            input_status(0, false),
+            text("セーヴ"),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+            input_status(0, true),
+        ],
     )
 }
 
