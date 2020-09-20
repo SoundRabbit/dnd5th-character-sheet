@@ -3,7 +3,7 @@
     height: 100vh;
     display: grid;
     grid-template-rows: 4rem 1fr;
-    grid-template-columns: 55vh 1fr;
+    grid-template-columns: minmax(30rem, 55vh) 1fr;
 
     &__left-menu {
         background-color: #2C7B8C;

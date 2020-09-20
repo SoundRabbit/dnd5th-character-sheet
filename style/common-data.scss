@@ -23,4 +23,21 @@
             min-width: 0;
         }
     }
+
+    &__skill-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: max-content 1fr max-content 1fr 1fr;
+        align-items: center;
+        row-gap: 0.3rem;
+        column-gap: 0.2rem;
+
+        &>input {
+            min-width: 0;
+
+            &[type="checkbox"] {
+                justify-self: center;
+            }
+        }
+    }
 }
