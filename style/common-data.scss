@@ -1,14 +1,42 @@
 .common-data {
     width: 100%;
     padding: 0.3rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: max-content;
+    grid-auto-flow: row;
+    row-gap: 0.3rem;
 
-    &__top {
+    & textarea {
+        resize: vertical;
+    }
+
+    & h2 {
+        margin-top: 1em;
+        border-bottom: 0.2rem solid #fff;
+        margin-bottom: 0.3em;
+    }
+
+    &__name {
         display: grid;
         grid-template-rows: max-content max-content;
         grid-template-columns: 1fr max-content;
         grid-auto-flow: column;
         row-gap: 0.2rem;
         column-gap: 0.3rem;
+    }
+
+    &__list {
+        display: grid;
+        grid-template-rows: max-content max-content;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        row-gap: 0.2rem;
+        column-gap: 0.3rem;
+
+        &>input {
+            min-width: 0;
+        }
     }
 
     &__status-grid {

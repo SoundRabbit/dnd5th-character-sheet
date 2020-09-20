@@ -45,13 +45,35 @@ fn render(state: &State, _: Vec<Html>) -> Html {
         Events::new(),
         vec![
             Html::div(
-                Attributes::new().class("common-data__top"),
+                Attributes::new().class("common-data__name"),
                 Events::new(),
                 vec![
                     Html::text("キャラクター名"),
                     Html::input(
                         Attributes::new().value(&character.name),
                         Events::new(),
+                        vec![],
+                    ),
+                    Html::text("プレイヤー名"),
+                    Html::input(Attributes::new(), Events::new(), vec![]),
+                ],
+            ),
+            Html::div(
+                Attributes::new().class("common-data__list"),
+                Events::new(),
+                vec![
+                    Html::text("種族"),
+                    Html::component(
+                        select::new().with(select::Props {
+                            option: vec![String::from("エルフ")],
+                        }),
+                        vec![],
+                    ),
+                    Html::text("サイズ"),
+                    Html::component(
+                        select::new().with(select::Props {
+                            option: vec![String::from("エルフ")],
+                        }),
                         vec![],
                     ),
                     Html::text("属性"),
@@ -61,6 +83,14 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         }),
                         vec![],
                     ),
+                ],
+            ),
+            Html::div(
+                Attributes::new().class("common-data__list"),
+                Events::new(),
+                vec![
+                    Html::text("その他メモ"),
+                    Html::textarea(Attributes::new().nut("rows", 5), Events::new(), vec![]),
                 ],
             ),
             Html::h2(Attributes::new(), Events::new(), vec![Html::text("能力値")]),
