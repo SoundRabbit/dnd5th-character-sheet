@@ -1,6 +1,7 @@
 @import "app";
 @import "common-data";
 @import "experience";
+@import "growth";
 @import "item";
 @import "key-value";
 @import "select";
@@ -8,6 +9,7 @@
 * {
     overflow: hidden;
     box-sizing: border-box;
+    line-height: 1.5;
 }
 
 h2 {

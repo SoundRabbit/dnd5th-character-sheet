@@ -1,0 +1,25 @@
+.growth {
+    &__heading {
+        display: grid;
+        grid-template-columns: max-content 6em 1fr;
+        column-gap: 0.2rem;
+
+        &>input {
+            min-width: 0;
+        }
+
+        &--acquisition {
+            &>input {
+                background-color: #5eb95e;
+                color: #fff;
+            }
+        }
+
+        &--consumption {
+            &> {
+                background-color: #8058a5;
+                color: #fff;
+            }
+        }
+    }
+}

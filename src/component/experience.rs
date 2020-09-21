@@ -9,7 +9,9 @@ pub struct Props {
     pub growth_log: R<character::GrowthLog>,
 }
 
-pub enum Sub {}
+pub enum Sub {
+    AddGrowth,
+}
 
 pub type Exprerience = Component<Props, Sub>;
 
@@ -22,7 +24,9 @@ struct State {
     growthes: Vec<Growth>,
 }
 
-enum Msg {}
+enum Msg {
+    AddGrowth,
+}
 
 fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
@@ -40,8 +44,10 @@ fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>
     (state, cmd, batch)
 }
 
-fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
-    Cmd::none()
+fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
+    match msg {
+        Msg::AddGrowth => Cmd::sub(Sub::AddGrowth),
+    }
 }
 
 fn render(state: &State, _: Vec<Html>) -> Html {
@@ -100,7 +106,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 Attributes::new()
                     .class("pure-button")
                     .class("pure-button-primary"),
-                Events::new(),
+                Events::new().on_click(|_| Msg::AddGrowth),
                 vec![Html::text("追加")],
             ),
         ],

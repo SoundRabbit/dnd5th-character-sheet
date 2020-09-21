@@ -1,7 +1,7 @@
 use super::common_data;
-use super::experience;
 use super::function::text;
 use super::item;
+use super::{experience, Exprerience};
 use crate::model::character;
 use crate::util::prop::C;
 use kagura::prelude::*;
@@ -17,14 +17,18 @@ pub fn new() -> Component<Props, Sub> {
 struct State {
     common_data: C<character::CommonData>,
     growth_log: C<character::GrowthLog>,
+    experience: Exprerience,
 }
 
-enum Msg {}
+enum Msg {
+    AddGrowth,
+}
 
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
         common_data: C::new(character::CommonData::new()),
         growth_log: C::new(character::GrowthLog::new()),
+        experience: experience::new(),
     };
     let cmd = Cmd::none();
     let batch = vec![];
@@ -32,8 +36,20 @@ fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     (state, cmd, batch)
 }
 
-fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
-    Cmd::none()
+fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
+    match msg {
+        Msg::AddGrowth => {
+            state
+                .growth_log
+                .borrow_mut()
+                .push(C::new(character::Growth::Acquisition {
+                    title: String::new(),
+                    experience: 0,
+                    description: String::new(),
+                }));
+            Cmd::none()
+        }
+    }
 }
 
 fn render(state: &State, _: Vec<Html>) -> Html {
@@ -65,9 +81,14 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         Attributes::new().class("app__right"),
                         Events::new(),
                         vec![Html::component(
-                            experience::new().with(experience::Props {
-                                growth_log: state.growth_log.r(),
-                            }),
+                            state
+                                .experience
+                                .with(experience::Props {
+                                    growth_log: state.growth_log.r(),
+                                })
+                                .subscribe(|sub| match sub {
+                                    experience::Sub::AddGrowth => Msg::AddGrowth,
+                                }),
                             vec![],
                         )],
                     ),

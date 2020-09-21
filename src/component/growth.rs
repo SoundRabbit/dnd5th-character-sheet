@@ -60,12 +60,13 @@ fn render(state: &State, _: Vec<Html>) -> Html {
 
 fn acquisition(title: &String, experience: u32, description: &String) -> Html {
     Html::div(
-        Attributes::new()
-            .class("growth")
-            .class("growth--acquisition"),
+        Attributes::new().class("growth").class("growth"),
         Events::new(),
-        vec![Html::component(
-            key_value::new().with(key_value::Props {}),
+        vec![Html::div(
+            Attributes::new()
+                .class("growth__heading")
+                .class("growth__heading--acquisition"),
+            Events::new(),
             vec![
                 Html::select(
                     Attributes::new(),
@@ -107,12 +108,13 @@ fn consumption(
     description: &String,
 ) -> Html {
     Html::div(
-        Attributes::new()
-            .class("growth")
-            .class("growth--acquisition"),
+        Attributes::new().class("growth").class("growth"),
         Events::new(),
-        vec![Html::component(
-            key_value::new().with(key_value::Props {}),
+        vec![Html::div(
+            Attributes::new()
+                .class("growth__heading")
+                .class("growth__heading--consumption"),
+            Events::new(),
             vec![
                 Html::select(
                     Attributes::new(),
