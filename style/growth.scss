@@ -1,7 +1,7 @@
 .growth {
     &__heading {
         display: grid;
-        grid-template-columns: max-content 6em 1fr;
+        grid-template-columns: max-content 6em 1fr max-content;
         column-gap: 0.2rem;
 
         &>input {
@@ -21,5 +21,12 @@
                 color: #fff;
             }
         }
+    }
+
+    &__remove-button {
+        color: #fff;
+        background: rgb(202, 60, 60);
+        padding: .3em .6em;
+        line-height: 1;
     }
 }

@@ -152,6 +152,13 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
                     Events::new(),
                     vec![],
                 ),
+                Html::button(
+                    Attributes::new()
+                        .class("pure-button")
+                        .class("growth__remove-button"),
+                    Events::new(),
+                    vec![Html::text("×")],
+                ),
             ],
         )],
     )
