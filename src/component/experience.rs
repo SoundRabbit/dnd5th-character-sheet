@@ -1,3 +1,4 @@
+use super::function::text;
 use super::key_value;
 use super::select;
 use super::{growth, Growth};
@@ -10,7 +11,8 @@ pub struct Props {
 }
 
 pub enum Sub {
-    AddGrowth,
+    AddGrowth(character::Growth),
+    SetGrowth(usize, character::Growth),
 }
 
 pub type Exprerience = Component<Props, Sub>;
@@ -26,6 +28,7 @@ struct State {
 
 enum Msg {
     AddGrowth,
+    SetGrowth(usize, character::Growth),
 }
 
 fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -46,7 +49,15 @@ fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>
 
 fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     match msg {
-        Msg::AddGrowth => Cmd::sub(Sub::AddGrowth),
+        Msg::AddGrowth => {
+            let growth = character::Growth::Acquisition {
+                title: String::new(),
+                experience: 0,
+                description: String::new(),
+            };
+            Cmd::sub(Sub::AddGrowth(growth))
+        }
+        Msg::SetGrowth(i, growth) => Cmd::sub(Sub::SetGrowth(i, growth)),
     }
 }
 
@@ -64,6 +75,30 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 Attributes::new(),
                 Events::new(),
                 vec![Html::text("経験点の獲得/消費")],
+            ),
+            Html::div(
+                Attributes::new().class("experience__sum"),
+                Events::new(),
+                vec![
+                    text::div("獲得経験点"),
+                    Html::input(
+                        Attributes::new().type_("number").flag("readonly"),
+                        Events::new(),
+                        vec![],
+                    ),
+                    text::div("消費経験点"),
+                    Html::input(
+                        Attributes::new().type_("number").flag("readonly"),
+                        Events::new(),
+                        vec![],
+                    ),
+                    text::div("所持経験点"),
+                    Html::input(
+                        Attributes::new().type_("number").flag("readonly"),
+                        Events::new(),
+                        vec![],
+                    ),
+                ],
             ),
             Html::component(
                 key_value::new().with(key_value::Props {}),
@@ -99,7 +134,17 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     .borrow()
                     .iter()
                     .zip(state.growthes.iter())
-                    .map(|(g, c)| Html::component(c.with(growth::Props { growth: g.r() }), vec![]))
+                    .enumerate()
+                    .map(|(i, (g, c))| {
+                        Html::component(
+                            c.with(growth::Props { growth: g.r() }).subscribe(
+                                move |sub| match sub {
+                                    growth::Sub::SetGrowth(growth) => Msg::SetGrowth(i, growth),
+                                },
+                            ),
+                            vec![],
+                        )
+                    })
                     .collect(),
             ),
             Html::button(

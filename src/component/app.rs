@@ -21,7 +21,8 @@ struct State {
 }
 
 enum Msg {
-    AddGrowth,
+    AddGrowth(character::Growth),
+    SetGrowth(usize, character::Growth),
 }
 
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -38,15 +39,12 @@ fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
 
 fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     match msg {
-        Msg::AddGrowth => {
-            state
-                .growth_log
-                .borrow_mut()
-                .push(C::new(character::Growth::Acquisition {
-                    title: String::new(),
-                    experience: 0,
-                    description: String::new(),
-                }));
+        Msg::AddGrowth(growth) => {
+            state.growth_log.borrow_mut().push(C::new(growth));
+            Cmd::none()
+        }
+        Msg::SetGrowth(i, growth) => {
+            state.growth_log.borrow_mut()[i] = C::new(growth);
             Cmd::none()
         }
     }
@@ -87,7 +85,10 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                                     growth_log: state.growth_log.r(),
                                 })
                                 .subscribe(|sub| match sub {
-                                    experience::Sub::AddGrowth => Msg::AddGrowth,
+                                    experience::Sub::AddGrowth(growth) => Msg::AddGrowth(growth),
+                                    experience::Sub::SetGrowth(i, growth) => {
+                                        Msg::SetGrowth(i, growth)
+                                    }
                                 }),
                             vec![],
                         )],

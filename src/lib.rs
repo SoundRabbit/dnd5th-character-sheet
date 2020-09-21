@@ -1,5 +1,6 @@
 extern crate kagura;
 extern crate wasm_bindgen;
+extern crate web_sys;
 
 mod component;
 mod model;

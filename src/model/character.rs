@@ -6,6 +6,7 @@ pub struct CommonData {
     pub name: String,
 }
 
+#[derive(Clone)]
 pub struct Status {
     pub strength: u32,
     pub dexterity: u32,
@@ -28,6 +29,7 @@ pub struct GrowthLog {
     log: Vec<C<Growth>>,
 }
 
+#[derive(Clone)]
 pub enum Growth {
     Acquisition {
         title: String,
@@ -95,6 +97,27 @@ impl Growth {
         match self {
             Self::Consumption { .. } => true,
             _ => false,
+        }
+    }
+
+    pub fn title(&self) -> &String {
+        match self {
+            Self::Acquisition { title, .. } => title,
+            Self::Consumption { title, .. } => title,
+        }
+    }
+
+    pub fn experience(&self) -> u32 {
+        match self {
+            Self::Acquisition { experience, .. } => *experience,
+            Self::Consumption { experience, .. } => *experience,
+        }
+    }
+
+    pub fn description(&self) -> &String {
+        match self {
+            Self::Acquisition { description, .. } => description,
+            Self::Consumption { description, .. } => description,
         }
     }
 }
