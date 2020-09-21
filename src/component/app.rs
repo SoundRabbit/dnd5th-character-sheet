@@ -16,6 +16,7 @@ pub fn new() -> Component<Props, Sub> {
 
 struct State {
     common_data: C<character::CommonData>,
+    growth_log: C<character::GrowthLog>,
 }
 
 enum Msg {}
@@ -23,6 +24,7 @@ enum Msg {}
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
         common_data: C::new(character::CommonData::new()),
+        growth_log: C::new(character::GrowthLog::new()),
     };
     let cmd = Cmd::none();
     let batch = vec![];
@@ -63,7 +65,9 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         Attributes::new().class("app__right"),
                         Events::new(),
                         vec![Html::component(
-                            experience::new().with(experience::Props {}),
+                            experience::new().with(experience::Props {
+                                growth_log: state.growth_log.r(),
+                            }),
                             vec![],
                         )],
                     ),

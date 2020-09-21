@@ -1,8 +1,13 @@
 use super::key_value;
 use super::select;
+use super::{growth, Growth};
+use crate::model::character;
+use crate::util::prop::R;
 use kagura::prelude::*;
 
-pub struct Props {}
+pub struct Props {
+    pub growth_log: R<character::GrowthLog>,
+}
 
 pub enum Sub {}
 
@@ -12,12 +17,23 @@ pub fn new() -> Exprerience {
     Component::new(init, update, render)
 }
 
-struct State {}
+struct State {
+    growth_log: R<character::GrowthLog>,
+    growthes: Vec<Growth>,
+}
 
 enum Msg {}
 
-fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
-    let state = State {};
+fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
+    let state = State {
+        growth_log: props.growth_log.clone(),
+        growthes: props
+            .growth_log
+            .borrow()
+            .iter()
+            .map(|_| growth::new())
+            .collect(),
+    };
     let cmd = Cmd::none();
     let batch = vec![];
 
@@ -28,7 +44,7 @@ fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
     Cmd::none()
 }
 
-fn render(_: &State, _: Vec<Html>) -> Html {
+fn render(state: &State, _: Vec<Html>) -> Html {
     Html::div(
         Attributes::new().class("pure-form").class("experience"),
         Events::new(),
@@ -68,6 +84,17 @@ fn render(_: &State, _: Vec<Html>) -> Html {
                         vec![],
                     ),
                 ],
+            ),
+            Html::div(
+                Attributes::new().class("experience__growth-log"),
+                Events::new(),
+                state
+                    .growth_log
+                    .borrow()
+                    .iter()
+                    .zip(state.growthes.iter())
+                    .map(|(g, c)| Html::component(c.with(growth::Props { growth: g.r() }), vec![]))
+                    .collect(),
             ),
             Html::button(
                 Attributes::new()

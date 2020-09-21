@@ -1,4 +1,6 @@
 use crate::util::prop::C;
+use std::ops::Deref;
+use std::ops::DerefMut;
 
 pub struct CommonData {
     pub name: String,
@@ -22,6 +24,25 @@ pub enum StatusItem {
     Charisma(u32),
 }
 
+pub struct GrowthLog {
+    log: Vec<C<Growth>>,
+}
+
+pub enum Growth {
+    Acquisition {
+        title: String,
+        experience: u32,
+        description: String,
+    },
+    Consumption {
+        title: String,
+        experience: u32,
+        class_name: String,
+        status: Status,
+        description: String,
+    },
+}
+
 impl CommonData {
     pub fn new() -> Self {
         Self {
@@ -39,6 +60,41 @@ impl Status {
             intelligence: 0,
             wisdom: 0,
             charisma: 0,
+        }
+    }
+}
+
+impl GrowthLog {
+    pub fn new() -> Self {
+        Self { log: Vec::new() }
+    }
+}
+
+impl Deref for GrowthLog {
+    type Target = Vec<C<Growth>>;
+    fn deref(&self) -> &Self::Target {
+        &self.log
+    }
+}
+
+impl DerefMut for GrowthLog {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.log
+    }
+}
+
+impl Growth {
+    pub fn is_acquisition(&self) -> bool {
+        match self {
+            Self::Acquisition { .. } => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_consumption(&self) -> bool {
+        match self {
+            Self::Consumption { .. } => true,
+            _ => false,
         }
     }
 }
