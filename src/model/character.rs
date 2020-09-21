@@ -100,6 +100,32 @@ impl GrowthLog {
     pub fn sum_of_experience(&self) -> i64 {
         self.sum_of_acquisition() as i64 - self.sum_of_consumption() as i64
     }
+
+    pub fn class_level(&self) -> Vec<(String, u32)> {
+        let mut res = Vec::new();
+
+        for growth in &self.log {
+            match &(*growth.borrow()) {
+                Growth::Consumption { class_name, .. } => {
+                    if !class_name.is_empty() {
+                        let mut is_changed = false;
+                        for (cn, lv) in &mut res {
+                            if cn == class_name {
+                                *lv += 1;
+                                is_changed = true;
+                            }
+                        }
+                        if !is_changed {
+                            res.push((class_name.clone(), 1));
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        res
+    }
 }
 
 impl Deref for GrowthLog {
