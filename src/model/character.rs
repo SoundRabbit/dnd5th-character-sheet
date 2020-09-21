@@ -70,6 +70,36 @@ impl GrowthLog {
     pub fn new() -> Self {
         Self { log: Vec::new() }
     }
+
+    pub fn sum_of_acquisition(&self) -> u32 {
+        let mut res = 0;
+        for growth in &self.log {
+            match &(*growth.borrow()) {
+                Growth::Acquisition { experience, .. } => {
+                    res += *experience;
+                }
+                _ => {}
+            }
+        }
+        res
+    }
+
+    pub fn sum_of_consumption(&self) -> u32 {
+        let mut res = 0;
+        for growth in &self.log {
+            match &(*growth.borrow()) {
+                Growth::Consumption { experience, .. } => {
+                    res += *experience;
+                }
+                _ => {}
+            }
+        }
+        res
+    }
+
+    pub fn sum_of_experience(&self) -> i64 {
+        self.sum_of_acquisition() as i64 - self.sum_of_consumption() as i64
+    }
 }
 
 impl Deref for GrowthLog {

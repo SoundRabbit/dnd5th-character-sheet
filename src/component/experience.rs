@@ -83,19 +83,28 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 vec![
                     text::div("獲得経験点"),
                     Html::input(
-                        Attributes::new().type_("number").flag("readonly"),
+                        Attributes::new()
+                            .type_("number")
+                            .flag("readonly")
+                            .value(state.growth_log.borrow().sum_of_acquisition().to_string()),
                         Events::new(),
                         vec![],
                     ),
                     text::div("消費経験点"),
                     Html::input(
-                        Attributes::new().type_("number").flag("readonly"),
+                        Attributes::new()
+                            .type_("number")
+                            .flag("readonly")
+                            .value(state.growth_log.borrow().sum_of_consumption().to_string()),
                         Events::new(),
                         vec![],
                     ),
                     text::div("所持経験点"),
                     Html::input(
-                        Attributes::new().type_("number").flag("readonly"),
+                        Attributes::new()
+                            .type_("number")
+                            .flag("readonly")
+                            .value(state.growth_log.borrow().sum_of_experience().to_string()),
                         Events::new(),
                         vec![],
                     ),
