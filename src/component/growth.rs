@@ -24,7 +24,9 @@ struct State {
 }
 
 enum Msg {
+    NoOp,
     SetGrowthType(bool),
+    SetExperience(u32),
 }
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -44,6 +46,7 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
 
 fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     match msg {
+        Msg::NoOp => Cmd::none(),
         Msg::SetGrowthType(is_acquisition) => {
             let growth = if is_acquisition {
                 character::Growth::Acquisition {
@@ -61,6 +64,16 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 }
             };
             Cmd::sub(Sub::SetGrowth(growth))
+        }
+        Msg::SetExperience(exp) => {
+            let mut growth = state.growth.borrow().clone();
+            match &mut growth {
+                character::Growth::Acquisition { experience, .. }
+                | character::Growth::Consumption { experience, .. } => {
+                    *experience = exp;
+                }
+            }
+            Cmd::Sub(Sub::SetGrowth(growth))
         }
     }
 }
@@ -141,7 +154,13 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
                     Attributes::new()
                         .type_("number")
                         .value(experience.to_string()),
-                    Events::new(),
+                    Events::new().on_input(|exp| {
+                        if let Ok(exp) = exp.parse() {
+                            Msg::SetExperience(exp)
+                        } else {
+                            Msg::NoOp
+                        }
+                    }),
                     vec![],
                 ),
                 Html::input(
