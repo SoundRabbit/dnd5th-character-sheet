@@ -1,8 +1,7 @@
 use crate::util::prop::C;
 
-pub struct Character {
+pub struct CommonData {
     pub name: String,
-    pub status: Status,
 }
 
 pub struct Status {
@@ -23,11 +22,10 @@ pub enum StatusItem {
     Charisma(u32),
 }
 
-impl Character {
+impl CommonData {
     pub fn new() -> Self {
         Self {
             name: String::new(),
-            status: Status::new(),
         }
     }
 }

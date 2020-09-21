@@ -2,7 +2,7 @@ use super::common_data;
 use super::experience;
 use super::function::text;
 use super::item;
-use crate::model::{character, Character};
+use crate::model::character;
 use crate::util::prop::C;
 use kagura::prelude::*;
 
@@ -15,14 +15,14 @@ pub fn new() -> Component<Props, Sub> {
 }
 
 struct State {
-    character: C<Character>,
+    common_data: C<character::CommonData>,
 }
 
 enum Msg {}
 
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
-        character: C::new(Character::new()),
+        common_data: C::new(character::CommonData::new()),
     };
     let cmd = Cmd::none();
     let batch = vec![];
@@ -49,7 +49,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 Events::new(),
                 vec![Html::component(
                     common_data::new().with(common_data::Props {
-                        character: state.character.r(),
+                        common_data: state.common_data.r(),
                     }),
                     vec![],
                 )],

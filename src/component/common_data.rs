@@ -1,11 +1,11 @@
 use super::key_value;
 use super::select;
-use crate::model::Character;
+use crate::model::character;
 use crate::util::prop::R;
 use kagura::prelude::*;
 
 pub struct Props {
-    pub character: R<Character>,
+    pub common_data: R<character::CommonData>,
 }
 
 pub enum Sub {
@@ -19,14 +19,14 @@ pub fn new() -> CommonData {
 }
 
 struct State {
-    character: R<Character>,
+    common_data: R<character::CommonData>,
 }
 
 enum Msg {}
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
-        character: props.character,
+        common_data: props.common_data,
     };
     let cmd = Cmd::none();
     let batch = vec![];
@@ -39,7 +39,7 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
 }
 
 fn render(state: &State, _: Vec<Html>) -> Html {
-    let character: &Character = &(*state.character.borrow());
+    let common_data = &(*state.common_data.borrow());
 
     Html::form(
         Attributes::new().class("pure-form").class("common-data"),
@@ -51,7 +51,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 vec![
                     Html::text("キャラクター名"),
                     Html::input(
-                        Attributes::new().value(&character.name),
+                        Attributes::new().value(&common_data.name),
                         Events::new(),
                         vec![],
                     ),
