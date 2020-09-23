@@ -29,6 +29,7 @@ enum Msg {
     NoOp,
     SetGrowthType(bool),
     SetExperience(u32),
+    SetClassName(String),
 }
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -76,6 +77,21 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 }
             }
             Cmd::Sub(Sub::SetGrowth(growth))
+        }
+        Msg::SetClassName(changed_class_name) => {
+            let mut growth = state.growth.borrow().clone();
+            let is_changed = match &mut growth {
+                character::Growth::Consumption { class_name, .. } => {
+                    *class_name = changed_class_name;
+                    true
+                }
+                _ => false,
+            };
+            if is_changed {
+                Cmd::sub(Sub::SetGrowth(growth))
+            } else {
+                Cmd::none()
+            }
         }
     }
 }
