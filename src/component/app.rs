@@ -96,7 +96,10 @@ fn render(state: &State, _: Vec<Html>) -> Html {
 
 fn right_contents(state: &State) -> Vec<Html> {
     let mut content = vec![
-        right_menu(text::div("経験点/成長"), text::div("0点")),
+        right_menu(
+            text::div("経験点/成長"),
+            text::div(state.growth_log.borrow().sum_of_experience().to_string() + " 点"),
+        ),
         Html::div(
             Attributes::new().class("app__column").class("app__right"),
             Events::new(),
