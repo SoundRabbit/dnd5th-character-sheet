@@ -69,12 +69,14 @@ fn render(state: &State, _: Vec<Html>) -> Html {
         Events::new(),
         vec![
             Html::div(
-                Attributes::new().class("app__left-menu"),
+                Attributes::new()
+                    .class("app__column")
+                    .class("app__left-menu"),
                 Events::new(),
                 vec![],
             ),
             Html::div(
-                Attributes::new().class("app__left"),
+                Attributes::new().class("app__column").class("app__left"),
                 Events::new(),
                 vec![Html::component(
                     common_data::new().with(common_data::Props {
@@ -96,7 +98,7 @@ fn right_contents(state: &State) -> Vec<Html> {
     let mut content = vec![
         right_menu(text::div("経験点/成長"), text::div("0点")),
         Html::div(
-            Attributes::new().class("app__right"),
+            Attributes::new().class("app__column").class("app__right"),
             Events::new(),
             vec![Html::component(
                 state
@@ -117,7 +119,7 @@ fn right_contents(state: &State) -> Vec<Html> {
         ),
         right_menu(text::div("所持金/装備"), text::div("0gp")),
         Html::div(
-            Attributes::new().class("app__right"),
+            Attributes::new().class("app__column").class("app__right"),
             Events::new(),
             vec![Html::component(item::new().with(item::Props {}), vec![])],
         ),
@@ -131,7 +133,7 @@ fn right_contents(state: &State) -> Vec<Html> {
             text::div(class_level.to_string() + "Lv"),
         ));
         content.push(Html::div(
-            Attributes::new().class("app__right"),
+            Attributes::new().class("app__column").class("app__right"),
             Events::new(),
             vec![],
         ));
@@ -142,7 +144,9 @@ fn right_contents(state: &State) -> Vec<Html> {
 
 fn right_menu(right: Html, left: Html) -> Html {
     Html::div(
-        Attributes::new().class("app__right-menu"),
+        Attributes::new()
+            .class("app__column")
+            .class("app__right-menu"),
         Events::new(),
         vec![right, left],
     )

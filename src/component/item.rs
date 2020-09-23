@@ -51,18 +51,7 @@ fn render(_: &State, _: Vec<Html>) -> Html {
                         Events::new(),
                         vec![Html::text("合計")],
                     ),
-                    Html::div(
-                        Attributes::new().class("item__money"),
-                        Events::new(),
-                        vec![
-                            Html::input(
-                                Attributes::new().type_("number").flag("readonly"),
-                                Events::new(),
-                                vec![],
-                            ),
-                            Html::text("gp"),
-                        ],
-                    ),
+                    readonly_money(0, "gp"),
                 ],
             ),
             Html::h2(Attributes::new(), Events::new(), vec![Html::text("装備")]),
@@ -96,17 +85,6 @@ fn readonly_money(value: i64, unit: impl Into<String>) -> Html {
     Html::div(
         Attributes::new().class("item__money"),
         Events::new(),
-        vec![readonly_number(value), Html::text(unit)],
-    )
-}
-
-fn readonly_number(value: i64) -> Html {
-    Html::input(
-        Attributes::new()
-            .type_("number")
-            .flag("readonly")
-            .value(value.to_string()),
-        Events::new(),
-        vec![],
+        vec![Html::text(value.to_string()), Html::text(unit)],
     )
 }
