@@ -41,6 +41,7 @@ pub enum Growth {
         title: String,
         experience: u32,
         class_name: String,
+        hp: i32,
         status: Status,
         description: String,
     },
@@ -63,6 +64,29 @@ impl Status {
             intelligence: 0,
             wisdom: 0,
             charisma: 0,
+        }
+    }
+
+    pub fn set_item(&mut self, item: StatusItem) {
+        match item {
+            StatusItem::Strength(x) => {
+                self.strength = x;
+            }
+            StatusItem::Dexterity(x) => {
+                self.dexterity = x;
+            }
+            StatusItem::Constitution(x) => {
+                self.constitution = x;
+            }
+            StatusItem::Intelligence(x) => {
+                self.intelligence = x;
+            }
+            StatusItem::Wisdom(x) => {
+                self.wisdom = x;
+            }
+            StatusItem::Charisma(x) => {
+                self.charisma = x;
+            }
         }
     }
 }
