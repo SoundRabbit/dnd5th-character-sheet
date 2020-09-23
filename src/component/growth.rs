@@ -140,28 +140,42 @@ fn consumption(
                         Attributes::new().class("growth__list"),
                         Events::new(),
                         vec![
-                            text::div("クラス"),
-                            Html::component(
-                                select::new().with(select::Props {
-                                    suid: crate::suid!(),
-                                    option: vec![
-                                        String::from("ウィザード"),
-                                        String::from("ウォーロック"),
-                                        String::from("クレリック"),
-                                        String::from("ソーサラー"),
-                                        String::from("ドルイド"),
-                                        String::from("バード"),
-                                        String::from("バーバリアン"),
-                                        String::from("パラディン"),
-                                        String::from("ファイター"),
-                                        String::from("モンク"),
-                                        String::from("レンジャー"),
-                                        String::from("ローグ"),
-                                    ],
-                                }),
-                                vec![],
-                            ),
-                        ],
+                            vec![
+                                Html::div(
+                                    Attributes::new().class("growth__list-item-5"),
+                                    Events::new(),
+                                    vec![Html::text("クラス")],
+                                ),
+                                Html::div(
+                                    Attributes::new().class("growth__list-item-5"),
+                                    Events::new(),
+                                    vec![Html::component(
+                                        select::new().with(select::Props {
+                                            suid: crate::suid!(),
+                                            option: vec![
+                                                String::from("ウィザード"),
+                                                String::from("ウォーロック"),
+                                                String::from("クレリック"),
+                                                String::from("ソーサラー"),
+                                                String::from("ドルイド"),
+                                                String::from("バード"),
+                                                String::from("バーバリアン"),
+                                                String::from("パラディン"),
+                                                String::from("ファイター"),
+                                                String::from("モンク"),
+                                                String::from("レンジャー"),
+                                                String::from("ローグ"),
+                                            ],
+                                        }),
+                                        vec![],
+                                    )],
+                                ),
+                            ],
+                            input_growth_of_status("HP上昇", 0),
+                        ]
+                        .into_iter()
+                        .flatten()
+                        .collect(),
                     ),
                     Html::div(
                         Attributes::new().class("growth__list"),
