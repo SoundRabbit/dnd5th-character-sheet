@@ -67,6 +67,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::component(
                         select::new().with(select::Props {
                             suid: crate::suid!(),
+                            selected: String::new(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],
@@ -75,6 +76,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::component(
                         select::new().with(select::Props {
                             suid: crate::suid!(),
+                            selected: String::new(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],
@@ -83,6 +85,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     Html::component(
                         select::new().with(select::Props {
                             suid: crate::suid!(),
+                            selected: String::new(),
                             option: vec![String::from("エルフ")],
                         }),
                         vec![],

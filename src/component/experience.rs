@@ -14,6 +14,7 @@ pub struct Props {
 pub enum Sub {
     AddGrowth(character::Growth),
     SetGrowth(usize, character::Growth),
+    SetFirstClassName(String),
 }
 
 pub type Exprerience = Component<Props, Sub>;
@@ -30,6 +31,7 @@ struct State {
 enum Msg {
     AddGrowth,
     SetGrowth(usize, character::Growth),
+    SetFirstClassName(String),
 }
 
 fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -59,6 +61,7 @@ fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
             Cmd::sub(Sub::AddGrowth(growth))
         }
         Msg::SetGrowth(i, growth) => Cmd::sub(Sub::SetGrowth(i, growth)),
+        Msg::SetFirstClassName(class_name) => Cmd::sub(Sub::SetFirstClassName(class_name)),
     }
 }
 
@@ -71,6 +74,22 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 Attributes::new(),
                 Events::new(),
                 vec![Html::text("習得済みクラス")],
+            ),
+            Html::component(
+                key_value::new().with(key_value::Props {}),
+                state
+                    .growth_log
+                    .borrow()
+                    .class_level()
+                    .into_iter()
+                    .map(|(class_name, class_level)| {
+                        vec![
+                            text::div(class_name),
+                            text::div(class_level.to_string() + "Lv"),
+                        ]
+                    })
+                    .flatten()
+                    .collect(),
             ),
             Html::h2(
                 Attributes::new(),
@@ -115,23 +134,30 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 vec![
                     Html::text("初期クラス"),
                     Html::component(
-                        select::new().with(select::Props {
-                            suid: crate::suid!(),
-                            option: vec![
-                                String::from("ウィザード"),
-                                String::from("ウォーロック"),
-                                String::from("クレリック"),
-                                String::from("ソーサラー"),
-                                String::from("ドルイド"),
-                                String::from("バード"),
-                                String::from("バーバリアン"),
-                                String::from("パラディン"),
-                                String::from("ファイター"),
-                                String::from("モンク"),
-                                String::from("レンジャー"),
-                                String::from("ローグ"),
-                            ],
-                        }),
+                        select::new()
+                            .with(select::Props {
+                                suid: crate::suid!(),
+                                selected: state.growth_log.borrow().first_class_name().clone(),
+                                option: vec![
+                                    String::from("ウィザード"),
+                                    String::from("ウォーロック"),
+                                    String::from("クレリック"),
+                                    String::from("ソーサラー"),
+                                    String::from("ドルイド"),
+                                    String::from("バード"),
+                                    String::from("バーバリアン"),
+                                    String::from("パラディン"),
+                                    String::from("ファイター"),
+                                    String::from("モンク"),
+                                    String::from("レンジャー"),
+                                    String::from("ローグ"),
+                                ],
+                            })
+                            .subscribe(|sub| match sub {
+                                select::Sub::ChangeValue(class_name) => {
+                                    Msg::SetFirstClassName(class_name)
+                                }
+                            }),
                         vec![],
                     ),
                 ],

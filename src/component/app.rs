@@ -23,6 +23,7 @@ struct State {
 enum Msg {
     AddGrowth(character::Growth),
     SetGrowth(usize, character::Growth),
+    SetFirstClassName(String),
 }
 
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -45,6 +46,13 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
         }
         Msg::SetGrowth(i, growth) => {
             state.growth_log.borrow_mut()[i] = C::new(growth);
+            Cmd::none()
+        }
+        Msg::SetFirstClassName(class_name) => {
+            state
+                .growth_log
+                .borrow_mut()
+                .set_first_class_name(class_name);
             Cmd::none()
         }
     }
@@ -73,38 +81,57 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             Html::div(
                 Attributes::new().class("app__scroll"),
                 Events::new(),
-                vec![
-                    right_menu(text::div("経験点/成長"), text::div("0点")),
-                    Html::div(
-                        Attributes::new().class("app__right"),
-                        Events::new(),
-                        vec![Html::component(
-                            state
-                                .experience
-                                .with(experience::Props {
-                                    growth_log: state.growth_log.r(),
-                                })
-                                .subscribe(|sub| match sub {
-                                    experience::Sub::AddGrowth(growth) => Msg::AddGrowth(growth),
-                                    experience::Sub::SetGrowth(i, growth) => {
-                                        Msg::SetGrowth(i, growth)
-                                    }
-                                }),
-                            vec![],
-                        )],
-                    ),
-                    right_menu(text::div("所持金/装備"), text::div("0gp")),
-                    Html::div(
-                        Attributes::new().class("app__right"),
-                        Events::new(),
-                        vec![Html::component(item::new().with(item::Props {}), vec![])],
-                    ),
-                    right_menu(text::div("ウィザード"), text::div("1Lv")),
-                    Html::div(Attributes::new().class("app__right"), Events::new(), vec![]),
-                ],
+                right_contents(state),
             ),
         ],
     )
+}
+
+fn right_contents(state: &State) -> Vec<Html> {
+    let mut content = vec![
+        right_menu(text::div("経験点/成長"), text::div("0点")),
+        Html::div(
+            Attributes::new().class("app__right"),
+            Events::new(),
+            vec![Html::component(
+                state
+                    .experience
+                    .with(experience::Props {
+                        growth_log: state.growth_log.r(),
+                    })
+                    .subscribe(|sub| match sub {
+                        experience::Sub::AddGrowth(growth) => Msg::AddGrowth(growth),
+                        experience::Sub::SetGrowth(i, growth) => Msg::SetGrowth(i, growth),
+                        experience::Sub::SetFirstClassName(class_name) => {
+                            Msg::SetFirstClassName(class_name)
+                        }
+                    }),
+                vec![],
+            )],
+        ),
+        right_menu(text::div("所持金/装備"), text::div("0gp")),
+        Html::div(
+            Attributes::new().class("app__right"),
+            Events::new(),
+            vec![Html::component(item::new().with(item::Props {}), vec![])],
+        ),
+    ];
+
+    let classes = state.growth_log.borrow().class_level();
+
+    for (class_name, class_level) in classes {
+        content.push(right_menu(
+            text::div(class_name),
+            text::div(class_level.to_string() + "Lv"),
+        ));
+        content.push(Html::div(
+            Attributes::new().class("app__right"),
+            Events::new(),
+            vec![],
+        ));
+    }
+
+    content
 }
 
 fn right_menu(right: Html, left: Html) -> Html {

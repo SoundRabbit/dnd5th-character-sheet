@@ -26,6 +26,7 @@ pub enum StatusItem {
 }
 
 pub struct GrowthLog {
+    first_class_name: String,
     log: Vec<C<Growth>>,
 }
 
@@ -68,7 +69,10 @@ impl Status {
 
 impl GrowthLog {
     pub fn new() -> Self {
-        Self { log: Vec::new() }
+        Self {
+            first_class_name: String::new(),
+            log: Vec::new(),
+        }
     }
 
     pub fn sum_of_acquisition(&self) -> u32 {
@@ -104,6 +108,10 @@ impl GrowthLog {
     pub fn class_level(&self) -> Vec<(String, u32)> {
         let mut res = Vec::new();
 
+        if !self.first_class_name.is_empty() {
+            res.push((self.first_class_name.clone(), 1));
+        }
+
         for growth in &self.log {
             match &(*growth.borrow()) {
                 Growth::Consumption { class_name, .. } => {
@@ -125,6 +133,14 @@ impl GrowthLog {
         }
 
         res
+    }
+
+    pub fn first_class_name(&self) -> &String {
+        &self.first_class_name
+    }
+
+    pub fn set_first_class_name(&mut self, first_class_name: String) {
+        self.first_class_name = first_class_name;
     }
 }
 

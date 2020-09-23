@@ -166,23 +166,30 @@ fn consumption(
                                     Attributes::new().class("growth__list-item-5"),
                                     Events::new(),
                                     vec![Html::component(
-                                        select::new().with(select::Props {
-                                            suid: crate::suid!(),
-                                            option: vec![
-                                                String::from("ウィザード"),
-                                                String::from("ウォーロック"),
-                                                String::from("クレリック"),
-                                                String::from("ソーサラー"),
-                                                String::from("ドルイド"),
-                                                String::from("バード"),
-                                                String::from("バーバリアン"),
-                                                String::from("パラディン"),
-                                                String::from("ファイター"),
-                                                String::from("モンク"),
-                                                String::from("レンジャー"),
-                                                String::from("ローグ"),
-                                            ],
-                                        }),
+                                        select::new()
+                                            .with(select::Props {
+                                                suid: crate::suid!(),
+                                                selected: class_name.clone(),
+                                                option: vec![
+                                                    String::from("ウィザード"),
+                                                    String::from("ウォーロック"),
+                                                    String::from("クレリック"),
+                                                    String::from("ソーサラー"),
+                                                    String::from("ドルイド"),
+                                                    String::from("バード"),
+                                                    String::from("バーバリアン"),
+                                                    String::from("パラディン"),
+                                                    String::from("ファイター"),
+                                                    String::from("モンク"),
+                                                    String::from("レンジャー"),
+                                                    String::from("ローグ"),
+                                                ],
+                                            })
+                                            .subscribe(|sub| match sub {
+                                                select::Sub::ChangeValue(class_name) => {
+                                                    Msg::SetClassName(class_name)
+                                                }
+                                            }),
                                         vec![],
                                     )],
                                 ),

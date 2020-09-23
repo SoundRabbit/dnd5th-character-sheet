@@ -1,11 +1,15 @@
 use kagura::prelude::*;
+use wasm_bindgen::{prelude::*, JsCast};
 
 pub struct Props {
     pub suid: u64,
     pub option: Vec<String>,
+    pub selected: String,
 }
 
-pub enum Sub {}
+pub enum Sub {
+    ChangeValue(String),
+}
 
 pub type Select = Component<Props, Sub>;
 
@@ -16,22 +20,26 @@ pub fn new() -> Select {
 struct State {
     id: String,
     option: Vec<String>,
-    manual: Option<String>,
+    selected: String,
 }
 
-enum Msg {}
+enum Msg {
+    NoOp,
+    ChangeValue(String),
+}
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
-    let mut state = if let Some(state) = state {
+    let state = if let Some(mut state) = state {
+        state.option = props.option;
+        state.selected = props.selected;
         state
     } else {
         State {
             id: String::from("select__") + &props.suid.to_string(),
-            option: vec![],
-            manual: None,
+            option: props.option,
+            selected: props.selected,
         }
     };
-    state.option = props.option;
 
     let cmd = Cmd::none();
     let batch = vec![];
@@ -39,8 +47,14 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
     (state, cmd, batch)
 }
 
-fn update(_: &mut State, _: Msg) -> Cmd<Msg, Sub> {
-    Cmd::none()
+fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
+    match msg {
+        Msg::NoOp => Cmd::none(),
+        Msg::ChangeValue(selected) => {
+            state.selected = selected.clone();
+            Cmd::sub(Sub::ChangeValue(selected))
+        }
+    }
 }
 
 fn render(state: &State, _: Vec<Html>) -> Html {
@@ -51,9 +65,14 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             Html::input(
                 Attributes::new()
                     .string("list", &state.id)
-                    .value(state.manual.as_ref().unwrap_or(&String::new()))
+                    .value(&state.selected)
                     .class("select__input"),
-                Events::new(),
+                Events::new().on("change", |e| {
+                    e.target()
+                        .and_then(|t| t.dyn_into::<web_sys::HtmlInputElement>().ok())
+                        .map(|t| Msg::ChangeValue(t.value()))
+                        .unwrap_or(Msg::NoOp)
+                }),
                 vec![],
             ),
             Html::datalist(
