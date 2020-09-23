@@ -12,6 +12,7 @@ pub struct Props {
 
 pub enum Sub {
     SetGrowth(character::Growth),
+    RemoveSelf,
 }
 
 pub type Growth = Component<Props, Sub>;
@@ -30,6 +31,7 @@ enum Msg {
     SetGrowthType(bool),
     SetExperience(u32),
     SetClassName(String),
+    RemoveSelf,
 }
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -93,6 +95,7 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 Cmd::none()
             }
         }
+        Msg::RemoveSelf => Cmd::sub(Sub::RemoveSelf),
     }
 }
 
@@ -281,7 +284,7 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
                     Attributes::new()
                         .class("pure-button")
                         .class("growth__remove-button"),
-                    Events::new(),
+                    Events::new().on_click(|_| Msg::RemoveSelf),
                     vec![Html::text("×")],
                 ),
             ],

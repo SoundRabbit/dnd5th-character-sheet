@@ -24,6 +24,7 @@ enum Msg {
     AddGrowth(character::Growth),
     SetGrowth(usize, character::Growth),
     SetFirstClassName(String),
+    RemoveGrowth(usize),
 }
 
 fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -53,6 +54,10 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 .growth_log
                 .borrow_mut()
                 .set_first_class_name(class_name);
+            Cmd::none()
+        }
+        Msg::RemoveGrowth(i) => {
+            state.growth_log.borrow_mut().remove(i);
             Cmd::none()
         }
     }
@@ -105,6 +110,7 @@ fn right_contents(state: &State) -> Vec<Html> {
                         experience::Sub::SetFirstClassName(class_name) => {
                             Msg::SetFirstClassName(class_name)
                         }
+                        experience::Sub::RemoveGrowth(i) => Msg::RemoveGrowth(i),
                     }),
                 vec![],
             )],

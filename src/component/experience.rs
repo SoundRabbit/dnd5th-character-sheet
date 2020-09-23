@@ -15,6 +15,7 @@ pub enum Sub {
     AddGrowth(character::Growth),
     SetGrowth(usize, character::Growth),
     SetFirstClassName(String),
+    RemoveGrowth(usize),
 }
 
 pub type Exprerience = Component<Props, Sub>;
@@ -32,6 +33,7 @@ enum Msg {
     AddGrowth,
     SetGrowth(usize, character::Growth),
     SetFirstClassName(String),
+    RemoveGrowth(usize),
 }
 
 fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
@@ -62,6 +64,7 @@ fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
         }
         Msg::SetGrowth(i, growth) => Cmd::sub(Sub::SetGrowth(i, growth)),
         Msg::SetFirstClassName(class_name) => Cmd::sub(Sub::SetFirstClassName(class_name)),
+        Msg::RemoveGrowth(i) => Cmd::sub(Sub::RemoveGrowth(i)),
     }
 }
 
@@ -176,6 +179,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                             c.with(growth::Props { growth: g.r() }).subscribe(
                                 move |sub| match sub {
                                     growth::Sub::SetGrowth(growth) => Msg::SetGrowth(i, growth),
+                                    growth::Sub::RemoveSelf => Msg::RemoveGrowth(i),
                                 },
                             ),
                             vec![],
