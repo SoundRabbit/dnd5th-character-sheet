@@ -30,6 +30,8 @@ enum Msg {
     NoOp,
     SetGrowthType(bool),
     SetExperience(u32),
+    SetTitle(String),
+    SetDescription(String),
     SetClassName(String),
     RemoveSelf,
 }
@@ -76,6 +78,26 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 character::Growth::Acquisition { experience, .. }
                 | character::Growth::Consumption { experience, .. } => {
                     *experience = exp;
+                }
+            }
+            Cmd::Sub(Sub::SetGrowth(growth))
+        }
+        Msg::SetTitle(changed_title) => {
+            let mut growth = state.growth.borrow().clone();
+            match &mut growth {
+                character::Growth::Acquisition { title, .. }
+                | character::Growth::Consumption { title, .. } => {
+                    *title = changed_title;
+                }
+            }
+            Cmd::Sub(Sub::SetGrowth(growth))
+        }
+        Msg::SetDescription(changed_description) => {
+            let mut growth = state.growth.borrow().clone();
+            match &mut growth {
+                character::Growth::Acquisition { description, .. }
+                | character::Growth::Consumption { description, .. } => {
+                    *description = changed_description;
                 }
             }
             Cmd::Sub(Sub::SetGrowth(growth))
@@ -129,7 +151,11 @@ fn acquisition(title: &String, experience: u32, description: &String) -> Html {
                 Events::new(),
                 vec![
                     Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
-                    Html::textarea(Attributes::new().value(description), Events::new(), vec![]),
+                    Html::textarea(
+                        Attributes::new().value(description),
+                        Events::new().on_input(Msg::SetDescription),
+                        vec![],
+                    ),
                 ],
             ),
         ],
@@ -219,7 +245,11 @@ fn consumption(
                         .collect(),
                     ),
                     Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
-                    Html::textarea(Attributes::new().value(description), Events::new(), vec![]),
+                    Html::textarea(
+                        Attributes::new().value(description),
+                        Events::new().on_input(Msg::SetDescription),
+                        vec![],
+                    ),
                 ],
             ),
         ],
@@ -277,7 +307,7 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
                         .type_("text")
                         .value(title)
                         .class("growth__title"),
-                    Events::new(),
+                    Events::new().on_input(Msg::SetTitle),
                     vec![],
                 ),
                 Html::button(
