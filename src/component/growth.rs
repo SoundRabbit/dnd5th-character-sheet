@@ -389,8 +389,8 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
 
 fn input_growth_of_status(
     status_name: impl Into<String>,
-    value: u32,
-    mapper: impl FnOnce(u32) -> character::StatusItem + 'static,
+    value: i32,
+    mapper: impl FnOnce(i32) -> character::StatusItem + 'static,
 ) -> Vec<Html> {
     vec![
         text::div(status_name),

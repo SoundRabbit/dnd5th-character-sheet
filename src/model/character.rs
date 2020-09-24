@@ -8,21 +8,21 @@ pub struct CommonData {
 
 #[derive(Clone)]
 pub struct Status {
-    pub strength: u32,
-    pub dexterity: u32,
-    pub constitution: u32,
-    pub intelligence: u32,
-    pub wisdom: u32,
-    pub charisma: u32,
+    pub strength: i32,
+    pub dexterity: i32,
+    pub constitution: i32,
+    pub intelligence: i32,
+    pub wisdom: i32,
+    pub charisma: i32,
 }
 
 pub enum StatusItem {
-    Strength(u32),
-    Dexterity(u32),
-    Constitution(u32),
-    Intelligence(u32),
-    Wisdom(u32),
-    Charisma(u32),
+    Strength(i32),
+    Dexterity(i32),
+    Constitution(i32),
+    Intelligence(i32),
+    Wisdom(i32),
+    Charisma(i32),
 }
 
 pub struct GrowthLog {
@@ -151,6 +151,41 @@ impl GrowthLog {
                             res.push((class_name.clone(), 1));
                         }
                     }
+                }
+                _ => {}
+            }
+        }
+
+        res
+    }
+
+    pub fn status(&self) -> Status {
+        let mut res = Status::new();
+
+        for growth in &self.log {
+            match &(*growth.borrow()) {
+                Growth::Consumption { status, .. } => {
+                    res.strength += status.strength;
+                    res.dexterity += status.dexterity;
+                    res.constitution += status.constitution;
+                    res.intelligence += status.intelligence;
+                    res.wisdom += status.wisdom;
+                    res.charisma += status.charisma;
+                }
+                _ => {}
+            }
+        }
+
+        res
+    }
+
+    pub fn hp(&self) -> i32 {
+        let mut res = 0;
+
+        for growth in &self.log {
+            match &(*growth.borrow()) {
+                Growth::Consumption { hp, .. } => {
+                    res += hp;
                 }
                 _ => {}
             }

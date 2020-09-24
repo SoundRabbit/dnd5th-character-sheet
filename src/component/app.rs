@@ -81,6 +81,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 vec![Html::component(
                     common_data::new().with(common_data::Props {
                         common_data: state.common_data.r(),
+                        growth_log: state.growth_log.r(),
                     }),
                     vec![],
                 )],
