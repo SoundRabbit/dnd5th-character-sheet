@@ -26,7 +26,6 @@ pub fn new() -> Exprerience {
 
 struct State {
     growth_log: R<character::GrowthLog>,
-    growthes: Vec<Growth>,
 }
 
 enum Msg {
@@ -39,12 +38,6 @@ enum Msg {
 fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
         growth_log: props.growth_log.clone(),
-        growthes: props
-            .growth_log
-            .borrow()
-            .iter()
-            .map(|_| growth::new())
-            .collect(),
     };
     let cmd = Cmd::none();
     let batch = vec![];
@@ -172,16 +165,16 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     .growth_log
                     .borrow()
                     .iter()
-                    .zip(state.growthes.iter())
                     .enumerate()
-                    .map(|(i, (g, c))| {
-                        Html::component(
-                            c.with(growth::Props { growth: g.r() }).subscribe(
-                                move |sub| match sub {
+                    .map(|(i, g)| {
+                        Html::component_with_key(
+                            i as u64,
+                            growth::new()
+                                .with(growth::Props { growth: g.r() })
+                                .subscribe(move |sub| match sub {
                                     growth::Sub::SetGrowth(growth) => Msg::SetGrowth(i, growth),
                                     growth::Sub::RemoveSelf => Msg::RemoveGrowth(i),
-                                },
-                            ),
+                                }),
                             vec![],
                         )
                     })

@@ -1,5 +1,4 @@
-use super::function::text;
-use super::key_value;
+use super::function::{icon, text};
 use super::select;
 use crate::model::character;
 use crate::util::prop::R;
@@ -28,6 +27,7 @@ struct State {
 
 enum Msg {
     NoOp,
+    SetIsCollapsed(bool),
     SetGrowthType(bool),
     SetExperience(u32),
     SetTitle(String),
@@ -56,6 +56,10 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
 fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     match msg {
         Msg::NoOp => Cmd::none(),
+        Msg::SetIsCollapsed(is_collapsed) => {
+            state.is_collapsed = is_collapsed;
+            Cmd::none()
+        }
         Msg::SetGrowthType(is_acquisition) => {
             let growth = if is_acquisition {
                 character::Growth::Acquisition {
@@ -160,7 +164,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             title,
             experience,
             description,
-        } => acquisition(title, *experience, description),
+        } => acquisition(title, *experience, description, state.is_collapsed),
         character::Growth::Consumption {
             title,
             experience,
@@ -168,30 +172,42 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             hp,
             status,
             description,
-        } => consumption(title, *experience, class_name, *hp, status, description),
+        } => consumption(
+            title,
+            *experience,
+            class_name,
+            *hp,
+            status,
+            description,
+            state.is_collapsed,
+        ),
     }
 }
 
-fn acquisition(title: &String, experience: u32, description: &String) -> Html {
+fn acquisition(title: &String, experience: u32, description: &String, is_collapsed: bool) -> Html {
     Html::div(
         Attributes::new().class("growth").class("growth"),
         Events::new(),
         vec![
-            heading(title, experience, true),
-            Html::div(
-                Attributes::new()
-                    .class("growth__data")
-                    .class("growth__data--acquisition"),
-                Events::new(),
-                vec![
-                    Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
-                    Html::textarea(
-                        Attributes::new().value(description),
-                        Events::new().on_input(Msg::SetDescription),
-                        vec![],
-                    ),
-                ],
-            ),
+            heading(title, experience, true, is_collapsed),
+            if !is_collapsed {
+                Html::none()
+            } else {
+                Html::div(
+                    Attributes::new()
+                        .class("growth__data")
+                        .class("growth__data--acquisition"),
+                    Events::new(),
+                    vec![
+                        Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
+                        Html::textarea(
+                            Attributes::new().value(description),
+                            Events::new().on_input(Msg::SetDescription),
+                            vec![],
+                        ),
+                    ],
+                )
+            },
         ],
     )
 }
@@ -203,125 +219,130 @@ fn consumption(
     hp: i32,
     status: &character::Status,
     description: &String,
+    is_collapsed: bool,
 ) -> Html {
     Html::div(
         Attributes::new().class("growth").class("growth"),
         Events::new(),
         vec![
-            heading(title, experience, false),
-            Html::div(
-                Attributes::new()
-                    .class("growth__data")
-                    .class("growth__data--consumption"),
-                Events::new(),
-                vec![
-                    Html::h4(Attributes::new(), Events::new(), vec![Html::text("成長")]),
-                    Html::div(
-                        Attributes::new().class("growth__list"),
-                        Events::new(),
-                        vec![
-                            Html::div(
-                                Attributes::new().class("growth__list-item-5"),
-                                Events::new(),
-                                vec![Html::text("クラス")],
-                            ),
-                            Html::div(
-                                Attributes::new().class("growth__list-item-5"),
-                                Events::new(),
-                                vec![Html::component(
-                                    select::new()
-                                        .with(select::Props {
-                                            suid: crate::suid!(),
-                                            selected: class_name.clone(),
-                                            option: vec![
-                                                String::from("ウィザード"),
-                                                String::from("ウォーロック"),
-                                                String::from("クレリック"),
-                                                String::from("ソーサラー"),
-                                                String::from("ドルイド"),
-                                                String::from("バード"),
-                                                String::from("バーバリアン"),
-                                                String::from("パラディン"),
-                                                String::from("ファイター"),
-                                                String::from("モンク"),
-                                                String::from("レンジャー"),
-                                                String::from("ローグ"),
-                                            ],
-                                        })
-                                        .subscribe(|sub| match sub {
-                                            select::Sub::ChangeValue(class_name) => {
-                                                Msg::SetClassName(class_name)
-                                            }
-                                        }),
+            heading(title, experience, false, is_collapsed),
+            if !is_collapsed {
+                Html::none()
+            } else {
+                Html::div(
+                    Attributes::new()
+                        .class("growth__data")
+                        .class("growth__data--consumption"),
+                    Events::new(),
+                    vec![
+                        Html::h4(Attributes::new(), Events::new(), vec![Html::text("成長")]),
+                        Html::div(
+                            Attributes::new().class("growth__list"),
+                            Events::new(),
+                            vec![
+                                Html::div(
+                                    Attributes::new().class("growth__list-item-5"),
+                                    Events::new(),
+                                    vec![Html::text("クラス")],
+                                ),
+                                Html::div(
+                                    Attributes::new().class("growth__list-item-5"),
+                                    Events::new(),
+                                    vec![Html::component(
+                                        select::new()
+                                            .with(select::Props {
+                                                suid: crate::suid!(),
+                                                selected: class_name.clone(),
+                                                option: vec![
+                                                    String::from("ウィザード"),
+                                                    String::from("ウォーロック"),
+                                                    String::from("クレリック"),
+                                                    String::from("ソーサラー"),
+                                                    String::from("ドルイド"),
+                                                    String::from("バード"),
+                                                    String::from("バーバリアン"),
+                                                    String::from("パラディン"),
+                                                    String::from("ファイター"),
+                                                    String::from("モンク"),
+                                                    String::from("レンジャー"),
+                                                    String::from("ローグ"),
+                                                ],
+                                            })
+                                            .subscribe(|sub| match sub {
+                                                select::Sub::ChangeValue(class_name) => {
+                                                    Msg::SetClassName(class_name)
+                                                }
+                                            }),
+                                        vec![],
+                                    )],
+                                ),
+                                text::div("HP増加"),
+                                Html::input(
+                                    Attributes::new().value(hp.to_string()).type_("number"),
+                                    Events::new().on_input(move |hp| {
+                                        if let Ok(hp) = hp.parse() {
+                                            Msg::SetHp(hp)
+                                        } else {
+                                            Msg::NoOp
+                                        }
+                                    }),
                                     vec![],
-                                )],
-                            ),
-                            text::div("HP増加"),
-                            Html::input(
-                                Attributes::new().value(hp.to_string()).type_("number"),
-                                Events::new().on_input(move |hp| {
-                                    if let Ok(hp) = hp.parse() {
-                                        Msg::SetHp(hp)
-                                    } else {
-                                        Msg::NoOp
-                                    }
-                                }),
-                                vec![],
-                            ),
-                        ],
-                    ),
-                    Html::div(
-                        Attributes::new().class("growth__list"),
-                        Events::new(),
-                        vec![
-                            input_growth_of_status(
-                                "筋力",
-                                status.strength,
-                                character::StatusItem::Strength,
-                            ),
-                            input_growth_of_status(
-                                "敏捷力",
-                                status.dexterity,
-                                character::StatusItem::Dexterity,
-                            ),
-                            input_growth_of_status(
-                                "耐久力",
-                                status.constitution,
-                                character::StatusItem::Constitution,
-                            ),
-                            input_growth_of_status(
-                                "知力",
-                                status.intelligence,
-                                character::StatusItem::Intelligence,
-                            ),
-                            input_growth_of_status(
-                                "判断力",
-                                status.wisdom,
-                                character::StatusItem::Wisdom,
-                            ),
-                            input_growth_of_status(
-                                "魅力",
-                                status.charisma,
-                                character::StatusItem::Charisma,
-                            ),
-                        ]
-                        .into_iter()
-                        .flatten()
-                        .collect(),
-                    ),
-                    Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
-                    Html::textarea(
-                        Attributes::new().value(description),
-                        Events::new().on_input(Msg::SetDescription),
-                        vec![],
-                    ),
-                ],
-            ),
+                                ),
+                            ],
+                        ),
+                        Html::div(
+                            Attributes::new().class("growth__list"),
+                            Events::new(),
+                            vec![
+                                input_growth_of_status(
+                                    "筋力",
+                                    status.strength,
+                                    character::StatusItem::Strength,
+                                ),
+                                input_growth_of_status(
+                                    "敏捷力",
+                                    status.dexterity,
+                                    character::StatusItem::Dexterity,
+                                ),
+                                input_growth_of_status(
+                                    "耐久力",
+                                    status.constitution,
+                                    character::StatusItem::Constitution,
+                                ),
+                                input_growth_of_status(
+                                    "知力",
+                                    status.intelligence,
+                                    character::StatusItem::Intelligence,
+                                ),
+                                input_growth_of_status(
+                                    "判断力",
+                                    status.wisdom,
+                                    character::StatusItem::Wisdom,
+                                ),
+                                input_growth_of_status(
+                                    "魅力",
+                                    status.charisma,
+                                    character::StatusItem::Charisma,
+                                ),
+                            ]
+                            .into_iter()
+                            .flatten()
+                            .collect(),
+                        ),
+                        Html::h4(Attributes::new(), Events::new(), vec![Html::text("メモ")]),
+                        Html::textarea(
+                            Attributes::new().value(description),
+                            Events::new().on_input(Msg::SetDescription),
+                            vec![],
+                        ),
+                    ],
+                )
+            },
         ],
     )
 }
 
-fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
+fn heading(title: &String, experience: u32, is_acquisition: bool, is_collapsed: bool) -> Html {
     let (attr_1, attr_2) = if is_acquisition {
         (
             Attributes::new().value("acquisition").selected(),
@@ -346,6 +367,17 @@ fn heading(title: &String, experience: u32, is_acquisition: bool) -> Html {
                 }),
             Events::new(),
             vec![
+                if !is_collapsed {
+                    icon::arrow_right(
+                        Attributes::new(),
+                        Events::new().on_click(|_| Msg::SetIsCollapsed(true)),
+                    )
+                } else {
+                    icon::arrow_bottom(
+                        Attributes::new(),
+                        Events::new().on_click(|_| Msg::SetIsCollapsed(false)),
+                    )
+                },
                 Html::select(
                     Attributes::new(),
                     Events::new().on("change", move |_| Msg::SetGrowthType(!is_acquisition)),

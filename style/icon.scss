@@ -1,0 +1,14 @@
+.icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    align-self: center;
+
+    &--arrow-right {
+        background-image: url("../assets/arrow-right.svg");
+    }
+
+    &--arrow-bottom {
+        background-image: url("../assets/arrow-bottom.svg");
+    }
+}

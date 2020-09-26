@@ -1,7 +1,7 @@
 .growth {
     &__heading {
         display: grid;
-        grid-template-columns: max-content 6em 1fr max-content;
+        grid-template-columns: max-content max-content 6em 1fr max-content;
         column-gap: 0.2rem;
 
         &>input {
