@@ -374,12 +374,12 @@ fn heading(title: &String, experience: u32, is_acquisition: bool, is_collapsed: 
             vec![
                 if !is_collapsed {
                     icon::arrow_right(
-                        Attributes::new(),
+                        Attributes::new().class("clickable"),
                         Events::new().on_click(|_| Msg::SetIsCollapsed(true)),
                     )
                 } else {
                     icon::arrow_bottom(
-                        Attributes::new(),
+                        Attributes::new().class("clickable"),
                         Events::new().on_click(|_| Msg::SetIsCollapsed(false)),
                     )
                 },

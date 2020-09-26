@@ -51,3 +51,9 @@ textarea {
     background-color: #42B8DD;
     border-radius: 0.8rem;
 }
+
+.clickable {
+    &:hover {
+        cursor: pointer;
+    }
+}
