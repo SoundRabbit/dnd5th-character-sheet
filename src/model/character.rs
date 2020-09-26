@@ -4,6 +4,21 @@ use std::ops::DerefMut;
 
 pub struct CommonData {
     pub name: String,
+    pub initial_status: Status,
+    pub race_status: Status,
+    pub bonus_status: Status,
+    pub bonus_saving: Status,
+    pub bonus_initiative: i32,
+    pub armor_ac: i32,
+    pub shield_ac: i32,
+    pub bonus_ac: i32,
+    pub basic_mov: i32,
+    pub armor_mov: i32,
+    pub item_mov: i32,
+    pub bonus_mov: i32,
+    pub initial_hp: i32,
+    pub current_hp: i32,
+    pub hitdice: String,
 }
 
 #[derive(Clone)]
@@ -53,6 +68,21 @@ impl CommonData {
     pub fn new() -> Self {
         Self {
             name: String::new(),
+            initial_status: Status::new(),
+            race_status: Status::new(),
+            bonus_status: Status::new(),
+            bonus_saving: Status::new(),
+            bonus_initiative: 0,
+            armor_ac: 0,
+            shield_ac: 0,
+            bonus_ac: 0,
+            basic_mov: 0,
+            armor_mov: 0,
+            item_mov: 0,
+            bonus_mov: 0,
+            initial_hp: 0,
+            current_hp: 0,
+            hitdice: String::new(),
         }
     }
 }

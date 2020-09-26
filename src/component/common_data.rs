@@ -44,13 +44,34 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
 fn render(state: &State, _: Vec<Html>) -> Html {
     let common_data = &(*state.common_data.borrow());
     let growth_of_status = state.growth_log.borrow().status();
+    let initial_status = &common_data.initial_status;
+    let race_status = &common_data.race_status;
+    let bonus_status = &common_data.bonus_status;
     let status = character::Status {
-        strength: growth_of_status.strength,
-        dexterity: growth_of_status.dexterity,
-        constitution: growth_of_status.constitution,
-        intelligence: growth_of_status.intelligence,
-        wisdom: growth_of_status.wisdom,
-        charisma: growth_of_status.charisma,
+        strength: initial_status.strength
+            + race_status.strength
+            + growth_of_status.strength
+            + bonus_status.strength,
+        dexterity: initial_status.dexterity
+            + race_status.dexterity
+            + growth_of_status.dexterity
+            + bonus_status.dexterity,
+        constitution: initial_status.constitution
+            + race_status.constitution
+            + growth_of_status.constitution
+            + bonus_status.constitution,
+        intelligence: initial_status.intelligence
+            + race_status.intelligence
+            + growth_of_status.intelligence
+            + bonus_status.intelligence,
+        wisdom: initial_status.wisdom
+            + race_status.wisdom
+            + growth_of_status.wisdom
+            + bonus_status.wisdom,
+        charisma: initial_status.charisma
+            + race_status.charisma
+            + growth_of_status.charisma
+            + bonus_status.charisma,
     };
     let bonus = character::Status {
         strength: ((status.strength as f32 - 10.0) / 2.0).floor() as i32,
@@ -167,9 +188,23 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         key_value::new().with(key_value::Props {}),
                         vec![
                             Html::text("基本"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::input(
+                                Attributes::new()
+                                    .flag("readonly")
+                                    .value("10")
+                                    .type_("number"),
+                                Events::new(),
+                                vec![],
+                            ),
                             Html::text("能力値修正"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            Html::input(
+                                Attributes::new()
+                                    .flag("readonly")
+                                    .value(bonus.dexterity.to_string())
+                                    .type_("number"),
+                                Events::new(),
+                                vec![],
+                            ),
                             Html::text("防具"),
                             Html::input(Attributes::new(), Events::new(), vec![]),
                             Html::text("盾"),
