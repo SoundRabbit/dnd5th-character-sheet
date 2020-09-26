@@ -36,6 +36,7 @@ pub enum Growth {
         title: String,
         experience: u32,
         description: String,
+        key: u64,
     },
     Consumption {
         title: String,
@@ -44,6 +45,7 @@ pub enum Growth {
         hp: i32,
         status: Status,
         description: String,
+        key: u64,
     },
 }
 
@@ -249,6 +251,13 @@ impl Growth {
         match self {
             Self::Acquisition { description, .. } => description,
             Self::Consumption { description, .. } => description,
+        }
+    }
+
+    pub fn key(&self) -> u64 {
+        match self {
+            Self::Acquisition { key, .. } => *key,
+            Self::Consumption { key, .. } => *key,
         }
     }
 }

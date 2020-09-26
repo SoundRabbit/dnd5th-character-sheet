@@ -4,6 +4,7 @@ use super::key_value;
 use super::select;
 use super::{growth, Growth};
 use crate::model::character;
+use crate::util::luid;
 use crate::util::prop::R;
 use kagura::prelude::*;
 
@@ -52,6 +53,7 @@ fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                 title: String::new(),
                 experience: 0,
                 description: String::new(),
+                key: luid::new(),
             };
             Cmd::sub(Sub::AddGrowth(growth))
         }
@@ -168,7 +170,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                     .enumerate()
                     .map(|(i, g)| {
                         Html::component_with_key(
-                            i as u64,
+                            g.borrow().key(),
                             growth::new()
                                 .with(growth::Props { growth: g.r() })
                                 .subscribe(move |sub| match sub {

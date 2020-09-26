@@ -39,7 +39,8 @@ enum Msg {
 }
 
 fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
-    let state = if let Some(state) = state {
+    let state = if let Some(mut state) = state {
+        state.growth = props.growth;
         state
     } else {
         State {
@@ -66,6 +67,7 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                     title: state.growth.borrow().title().clone(),
                     experience: state.growth.borrow().experience(),
                     description: state.growth.borrow().description().clone(),
+                    key: state.growth.borrow().key(),
                 }
             } else {
                 character::Growth::Consumption {
@@ -75,6 +77,7 @@ fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
                     hp: 0,
                     status: character::Status::new(),
                     description: state.growth.borrow().description().clone(),
+                    key: state.growth.borrow().key(),
                 }
             };
             Cmd::sub(Sub::SetGrowth(growth))
@@ -164,6 +167,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             title,
             experience,
             description,
+            ..
         } => acquisition(title, *experience, description, state.is_collapsed),
         character::Growth::Consumption {
             title,
@@ -172,6 +176,7 @@ fn render(state: &State, _: Vec<Html>) -> Html {
             hp,
             status,
             description,
+            ..
         } => consumption(
             title,
             *experience,
