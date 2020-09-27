@@ -2,6 +2,7 @@ use crate::util::prop::C;
 use std::ops::Deref;
 use std::ops::DerefMut;
 
+#[derive(Debug)]
 pub struct CommonData {
     pub name: String,
     pub initial_status: Status,
@@ -21,7 +22,26 @@ pub struct CommonData {
     pub hitdice: String,
 }
 
-#[derive(Clone)]
+pub enum CommonDataItem {
+    Name(String),
+    InitialStatus(StatusItem),
+    RaceStatus(StatusItem),
+    BonusStatus(StatusItem),
+    BonusSaving(StatusItem),
+    BonusInitiative(i32),
+    ArmorAc(i32),
+    ShieldAc(i32),
+    BonusAc(i32),
+    BasicMov(i32),
+    ArmorMov(i32),
+    ItemMov(i32),
+    BonusMov(i32),
+    InitialHp(i32),
+    CurrentHp(i32),
+    HitDice(String),
+}
+
+#[derive(Clone, Debug)]
 pub struct Status {
     pub strength: i32,
     pub dexterity: i32,
@@ -83,6 +103,59 @@ impl CommonData {
             initial_hp: 0,
             current_hp: 0,
             hitdice: String::new(),
+        }
+    }
+
+    pub fn set_item(&mut self, item: CommonDataItem) {
+        match item {
+            CommonDataItem::Name(x) => {
+                self.name = x;
+            }
+            CommonDataItem::InitialStatus(x) => {
+                self.initial_status.set_item(x);
+            }
+            CommonDataItem::RaceStatus(x) => {
+                self.race_status.set_item(x);
+            }
+            CommonDataItem::BonusStatus(x) => {
+                self.bonus_status.set_item(x);
+            }
+            CommonDataItem::BonusSaving(x) => {
+                self.bonus_saving.set_item(x);
+            }
+            CommonDataItem::BonusInitiative(x) => {
+                self.bonus_initiative = x;
+            }
+            CommonDataItem::ArmorAc(x) => {
+                self.armor_ac = x;
+            }
+            CommonDataItem::ShieldAc(x) => {
+                self.shield_ac = x;
+            }
+            CommonDataItem::BonusAc(x) => {
+                self.bonus_ac = x;
+            }
+            CommonDataItem::BasicMov(x) => {
+                self.basic_mov = x;
+            }
+            CommonDataItem::ArmorMov(x) => {
+                self.armor_mov = x;
+            }
+            CommonDataItem::ItemMov(x) => {
+                self.item_mov = x;
+            }
+            CommonDataItem::BonusMov(x) => {
+                self.bonus_mov = x;
+            }
+            CommonDataItem::InitialHp(x) => {
+                self.initial_hp = x;
+            }
+            CommonDataItem::CurrentHp(x) => {
+                self.current_hp = x;
+            }
+            CommonDataItem::HitDice(x) => {
+                self.hitdice = x;
+            }
         }
     }
 }

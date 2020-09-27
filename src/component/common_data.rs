@@ -10,7 +10,7 @@ pub struct Props {
 }
 
 pub enum Sub {
-    SetCharacterName(String),
+    SetCommonData(character::CommonDataItem),
 }
 
 pub type CommonData = Component<Props, Sub>;
@@ -24,9 +24,12 @@ struct State {
     growth_log: R<character::GrowthLog>,
 }
 
-enum Msg {}
+enum Msg {
+    NoOp,
+    SetCommonData(character::CommonDataItem),
+}
 
-fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
+fn init(_: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
     let state = State {
         common_data: props.common_data,
         growth_log: props.growth_log,
@@ -37,8 +40,11 @@ fn init(state: Option<State>, props: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<
     (state, cmd, batch)
 }
 
-fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
-    Cmd::none()
+fn update(_: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
+    match msg {
+        Msg::NoOp => Cmd::none(),
+        Msg::SetCommonData(common_data_item) => Cmd::sub(Sub::SetCommonData(common_data_item)),
+    }
 }
 
 fn render(state: &State, _: Vec<Html>) -> Html {
@@ -81,13 +87,14 @@ fn render(state: &State, _: Vec<Html>) -> Html {
         wisdom: ((status.wisdom as f32 - 10.0) / 2.0).floor() as i32,
         charisma: ((status.charisma as f32 - 10.0) / 2.0).floor() as i32,
     };
+    let bonus_saving = &common_data.bonus_saving;
     let saving = character::Status {
-        strength: bonus.strength,
-        dexterity: bonus.dexterity,
-        constitution: bonus.constitution,
-        intelligence: bonus.intelligence,
-        wisdom: bonus.wisdom,
-        charisma: bonus.charisma,
+        strength: bonus.strength + bonus_saving.strength,
+        dexterity: bonus.dexterity + bonus_saving.dexterity,
+        constitution: bonus.constitution + bonus_saving.constitution,
+        intelligence: bonus.intelligence + bonus_saving.intelligence,
+        wisdom: bonus.wisdom + bonus_saving.wisdom,
+        charisma: bonus.charisma + bonus_saving.charisma,
     };
 
     Html::form(
@@ -150,13 +157,20 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 ],
             ),
             Html::h2(Attributes::new(), Events::new(), vec![Html::text("能力値")]),
-            grid_status(&growth_of_status, &status, &bonus),
+            grid_status(
+                &initial_status,
+                &race_status,
+                &growth_of_status,
+                &bonus_status,
+                &status,
+                &bonus,
+            ),
             Html::h2(
                 Attributes::new(),
                 Events::new(),
                 vec![Html::text("セーヴィングスロウ")],
             ),
-            grid_saving(&bonus, &saving),
+            grid_saving(&bonus, &bonus_saving, &saving),
             Html::div(
                 Attributes::new().class("common-data__list"),
                 Events::new(),
@@ -270,7 +284,10 @@ fn render(state: &State, _: Vec<Html>) -> Html {
 }
 
 fn grid_status(
+    initial_status: &character::Status,
+    race_status: &character::Status,
     growth_of_status: &character::Status,
+    bonus_status: &character::Status,
     status: &character::Status,
     bonus: &character::Status,
 ) -> Html {
@@ -286,47 +303,119 @@ fn grid_status(
             text("判断力"),
             text("魅力"),
             text("初期値"),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
+            input_status(initial_status.strength, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Strength(x),
+                ))
+            }),
+            input_status(initial_status.dexterity, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Dexterity(x),
+                ))
+            }),
+            input_status(initial_status.constitution, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Constitution(x),
+                ))
+            }),
+            input_status(initial_status.intelligence, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Intelligence(x),
+                ))
+            }),
+            input_status(initial_status.wisdom, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Wisdom(x),
+                ))
+            }),
+            input_status(initial_status.charisma, false, |x| {
+                Some(character::CommonDataItem::InitialStatus(
+                    character::StatusItem::Charisma(x),
+                ))
+            }),
             text("種族修正"),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
+            input_status(race_status.strength, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Strength(x),
+                ))
+            }),
+            input_status(race_status.dexterity, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Dexterity(x),
+                ))
+            }),
+            input_status(race_status.constitution, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Constitution(x),
+                ))
+            }),
+            input_status(race_status.intelligence, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Intelligence(x),
+                ))
+            }),
+            input_status(race_status.wisdom, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Wisdom(x),
+                ))
+            }),
+            input_status(race_status.charisma, false, |x| {
+                Some(character::CommonDataItem::RaceStatus(
+                    character::StatusItem::Charisma(x),
+                ))
+            }),
             text("成長"),
-            input_status(growth_of_status.strength, true),
-            input_status(growth_of_status.dexterity, true),
-            input_status(growth_of_status.constitution, true),
-            input_status(growth_of_status.intelligence, true),
-            input_status(growth_of_status.wisdom, true),
-            input_status(growth_of_status.charisma, true),
+            input_status(growth_of_status.strength, true, |_| None),
+            input_status(growth_of_status.dexterity, true, |_| None),
+            input_status(growth_of_status.constitution, true, |_| None),
+            input_status(growth_of_status.intelligence, true, |_| None),
+            input_status(growth_of_status.wisdom, true, |_| None),
+            input_status(growth_of_status.charisma, true, |_| None),
             text("その他修正"),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
+            input_status(bonus_status.strength, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Strength(x),
+                ))
+            }),
+            input_status(bonus_status.dexterity, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Dexterity(x),
+                ))
+            }),
+            input_status(bonus_status.constitution, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Constitution(x),
+                ))
+            }),
+            input_status(bonus_status.intelligence, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Intelligence(x),
+                ))
+            }),
+            input_status(bonus_status.wisdom, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Wisdom(x),
+                ))
+            }),
+            input_status(bonus_status.charisma, false, |x| {
+                Some(character::CommonDataItem::BonusStatus(
+                    character::StatusItem::Charisma(x),
+                ))
+            }),
             text("能力値"),
-            input_status(status.strength, true),
-            input_status(status.dexterity, true),
-            input_status(status.constitution, true),
-            input_status(status.intelligence, true),
-            input_status(status.wisdom, true),
-            input_status(status.charisma, true),
+            input_status(status.strength, true, |_| None),
+            input_status(status.dexterity, true, |_| None),
+            input_status(status.constitution, true, |_| None),
+            input_status(status.intelligence, true, |_| None),
+            input_status(status.wisdom, true, |_| None),
+            input_status(status.charisma, true, |_| None),
             text("能力値修正"),
-            input_status(bonus.strength, true),
-            input_status(bonus.dexterity, true),
-            input_status(bonus.wisdom, true),
-            input_status(bonus.intelligence, true),
-            input_status(bonus.wisdom, true),
-            input_status(bonus.charisma, true),
+            input_status(bonus.strength, true, |_| None),
+            input_status(bonus.dexterity, true, |_| None),
+            input_status(bonus.constitution, true, |_| None),
+            input_status(bonus.intelligence, true, |_| None),
+            input_status(bonus.wisdom, true, |_| None),
+            input_status(bonus.charisma, true, |_| None),
         ],
     )
 }
@@ -335,7 +424,11 @@ fn text(text: impl Into<String>) -> Html {
     Html::div(Attributes::new(), Events::new(), vec![Html::text(text)])
 }
 
-fn input_status(value: i32, is_readonly: bool) -> Html {
+fn input_status(
+    value: i32,
+    is_readonly: bool,
+    on_input: impl FnOnce(i32) -> Option<character::CommonDataItem> + 'static,
+) -> Html {
     let attrs = if is_readonly {
         Attributes::new().flag("readonly")
     } else {
@@ -343,12 +436,22 @@ fn input_status(value: i32, is_readonly: bool) -> Html {
     };
     Html::input(
         attrs.type_("number").value(value.to_string()),
-        Events::new(),
+        Events::new().on_input(move |x| {
+            x.parse()
+                .ok()
+                .and_then(move |x| on_input(x))
+                .map(|x| Msg::SetCommonData(x))
+                .unwrap_or(Msg::NoOp)
+        }),
         vec![],
     )
 }
 
-fn grid_saving(bonus: &character::Status, saving: &character::Status) -> Html {
+fn grid_saving(
+    bonus: &character::Status,
+    bonus_saving: &character::Status,
+    saving: &character::Status,
+) -> Html {
     Html::div(
         Attributes::new().class("common-data__status-grid"),
         Events::new(),
@@ -361,12 +464,12 @@ fn grid_saving(bonus: &character::Status, saving: &character::Status) -> Html {
             text("判断力"),
             text("魅力"),
             text("能力値修正"),
-            input_status(bonus.strength, true),
-            input_status(bonus.dexterity, true),
-            input_status(bonus.constitution, true),
-            input_status(bonus.intelligence, true),
-            input_status(bonus.wisdom, true),
-            input_status(bonus.charisma, true),
+            input_status(bonus.strength, true, |_| None),
+            input_status(bonus.dexterity, true, |_| None),
+            input_status(bonus.constitution, true, |_| None),
+            input_status(bonus.intelligence, true, |_| None),
+            input_status(bonus.wisdom, true, |_| None),
+            input_status(bonus.charisma, true, |_| None),
             text("習熟"),
             input_skill_expert(false),
             input_skill_expert(false),
@@ -375,19 +478,43 @@ fn grid_saving(bonus: &character::Status, saving: &character::Status) -> Html {
             input_skill_expert(false),
             input_skill_expert(false),
             text("その他修正"),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
-            input_status(0, false),
+            input_status(bonus_saving.strength, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Strength(x),
+                ))
+            }),
+            input_status(bonus_saving.dexterity, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Dexterity(x),
+                ))
+            }),
+            input_status(bonus_saving.constitution, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Constitution(x),
+                ))
+            }),
+            input_status(bonus_saving.intelligence, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Intelligence(x),
+                ))
+            }),
+            input_status(bonus_saving.wisdom, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Wisdom(x),
+                ))
+            }),
+            input_status(bonus_saving.charisma, false, |x| {
+                Some(character::CommonDataItem::BonusSaving(
+                    character::StatusItem::Charisma(x),
+                ))
+            }),
             text("セーヴ"),
-            input_status(saving.strength, true),
-            input_status(saving.dexterity, true),
-            input_status(saving.constitution, true),
-            input_status(saving.intelligence, true),
-            input_status(saving.wisdom, true),
-            input_status(saving.charisma, true),
+            input_status(saving.strength, true, |_| None),
+            input_status(saving.dexterity, true, |_| None),
+            input_status(saving.constitution, true, |_| None),
+            input_status(saving.intelligence, true, |_| None),
+            input_status(saving.wisdom, true, |_| None),
+            input_status(saving.charisma, true, |_| None),
         ],
     )
 }

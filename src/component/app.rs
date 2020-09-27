@@ -21,6 +21,7 @@ struct State {
 }
 
 enum Msg {
+    SetCommonData(character::CommonDataItem),
     AddGrowth(character::Growth),
     SetGrowth(usize, character::Growth),
     SetFirstClassName(String),
@@ -41,6 +42,10 @@ fn init(_: Option<State>, _: Props) -> (State, Cmd<Msg, Sub>, Vec<Batch<Msg>>) {
 
 fn update(state: &mut State, msg: Msg) -> Cmd<Msg, Sub> {
     match msg {
+        Msg::SetCommonData(common_data_item) => {
+            state.common_data.borrow_mut().set_item(common_data_item);
+            Cmd::none()
+        }
         Msg::AddGrowth(growth) => {
             state.growth_log.borrow_mut().push(C::new(growth));
             Cmd::none()
@@ -79,10 +84,16 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                 Attributes::new().class("app__column").class("app__left"),
                 Events::new(),
                 vec![Html::component(
-                    common_data::new().with(common_data::Props {
-                        common_data: state.common_data.r(),
-                        growth_log: state.growth_log.r(),
-                    }),
+                    common_data::new()
+                        .with(common_data::Props {
+                            common_data: state.common_data.r(),
+                            growth_log: state.growth_log.r(),
+                        })
+                        .subscribe(|sub| match sub {
+                            common_data::Sub::SetCommonData(common_data_item) => {
+                                Msg::SetCommonData(common_data_item)
+                            }
+                        }),
                     vec![],
                 )],
             ),
