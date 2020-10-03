@@ -20,6 +20,8 @@ pub struct CommonData {
     pub initial_hp: i32,
     pub current_hp: i32,
     pub hitdice: String,
+    pub expert_skill: Skill<bool>,
+    pub bonus_skill: Skill<i32>,
 }
 
 pub enum CommonDataItem {
@@ -39,6 +41,8 @@ pub enum CommonDataItem {
     InitialHp(i32),
     CurrentHp(i32),
     HitDice(String),
+    ExpertSkill(Skill<bool>),
+    BonusSkill(Skill<i32>),
 }
 
 #[derive(Clone, Debug)]
@@ -58,6 +62,28 @@ pub enum StatusItem {
     Intelligence(i32),
     Wisdom(i32),
     Charisma(i32),
+}
+
+#[derive(Debug)]
+pub struct Skill<T: Clone> {
+    pub acrobatics: T,
+    pub animal_handling: T,
+    pub arcana: T,
+    pub athletics: T,
+    pub deception: T,
+    pub history: T,
+    pub insight: T,
+    pub intimidation: T,
+    pub investigation: T,
+    pub medicine: T,
+    pub nature: T,
+    pub perception: T,
+    pub performance: T,
+    pub persuasion: T,
+    pub religion: T,
+    pub sleight_of_hand: T,
+    pub stealth: T,
+    pub survival: T,
 }
 
 pub struct GrowthLog {
@@ -103,6 +129,8 @@ impl CommonData {
             initial_hp: 0,
             current_hp: 0,
             hitdice: String::new(),
+            expert_skill: Skill::filled(false),
+            bonus_skill: Skill::filled(0),
         }
     }
 
@@ -156,6 +184,12 @@ impl CommonData {
             CommonDataItem::HitDice(x) => {
                 self.hitdice = x;
             }
+            CommonDataItem::ExpertSkill(x) => {
+                self.expert_skill = x;
+            }
+            CommonDataItem::BonusSkill(x) => {
+                self.bonus_skill = x;
+            }
         }
     }
 }
@@ -192,6 +226,31 @@ impl Status {
             StatusItem::Charisma(x) => {
                 self.charisma = x;
             }
+        }
+    }
+}
+
+impl<T: Clone> Skill<T> {
+    pub fn filled(v: T) -> Self {
+        Self {
+            acrobatics: v.clone(),
+            animal_handling: v.clone(),
+            arcana: v.clone(),
+            athletics: v.clone(),
+            deception: v.clone(),
+            history: v.clone(),
+            insight: v.clone(),
+            intimidation: v.clone(),
+            investigation: v.clone(),
+            medicine: v.clone(),
+            nature: v.clone(),
+            perception: v.clone(),
+            performance: v.clone(),
+            persuasion: v.clone(),
+            religion: v.clone(),
+            sleight_of_hand: v.clone(),
+            stealth: v.clone(),
+            survival: v.clone(),
         }
     }
 }
