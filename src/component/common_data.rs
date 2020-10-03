@@ -240,15 +240,30 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         key_value::new().with(key_value::Props {}),
                         vec![
                             Html::text("基本"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.basic_mov, false, |x| {
+                                Some(character::CommonDataItem::BasicMov(x))
+                            }),
                             Html::text("防具"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.armor_mov, false, |x| {
+                                Some(character::CommonDataItem::ArmorMov(x))
+                            }),
                             Html::text("アイテム"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.item_mov, false, |x| {
+                                Some(character::CommonDataItem::ItemMov(x))
+                            }),
                             Html::text("その他修正"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.bonus_mov, false, |x| {
+                                Some(character::CommonDataItem::BonusMov(x))
+                            }),
                             Html::text("移動速度"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(
+                                common_data.basic_mov
+                                    + common_data.armor_mov
+                                    + common_data.item_mov
+                                    + common_data.bonus_mov,
+                                true,
+                                |_| None,
+                            ),
                         ],
                     ),
                     Html::h2(
