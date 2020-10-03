@@ -184,17 +184,17 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         key_value::new().with(key_value::Props {}),
                         vec![
                             Html::text("能力値修正"),
-                            Html::input(
-                                Attributes::new()
-                                    .value(bonus.dexterity.to_string())
-                                    .flag("readonly"),
-                                Events::new(),
-                                vec![],
-                            ),
+                            input_status(bonus.dexterity, true, |_| None),
                             Html::text("その他修正"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.bonus_initiative, false, |x| {
+                                Some(character::CommonDataItem::BonusInitiative(x))
+                            }),
                             Html::text("イニシアチブ"),
-                            Html::input(Attributes::new().flag("readonly"), Events::new(), vec![]),
+                            input_status(
+                                common_data.bonus_initiative + bonus.dexterity,
+                                true,
+                                |_| None,
+                            ),
                         ],
                     ),
                     Html::h2(Attributes::new(), Events::new(), vec![Html::text("AC")]),
@@ -202,31 +202,27 @@ fn render(state: &State, _: Vec<Html>) -> Html {
                         key_value::new().with(key_value::Props {}),
                         vec![
                             Html::text("基本"),
-                            Html::input(
-                                Attributes::new()
-                                    .flag("readonly")
-                                    .value("10")
-                                    .type_("number"),
-                                Events::new(),
-                                vec![],
-                            ),
+                            input_status(10, true, |_| None),
                             Html::text("能力値修正"),
-                            Html::input(
-                                Attributes::new()
-                                    .flag("readonly")
-                                    .value(bonus.dexterity.to_string())
-                                    .type_("number"),
-                                Events::new(),
-                                vec![],
-                            ),
+                            input_status(bonus.dexterity, true, |_| None),
                             Html::text("防具"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.armor_ac, false, |x| {
+                                Some(character::CommonDataItem::ArmorAc(x))
+                            }),
                             Html::text("盾"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.shield_ac, false, |x| {
+                                Some(character::CommonDataItem::ShieldAc(x))
+                            }),
                             Html::text("その他修正"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(common_data.bonus_ac, false, |x| {
+                                Some(character::CommonDataItem::BonusAc(x))
+                            }),
                             Html::text("AC"),
-                            Html::input(Attributes::new(), Events::new(), vec![]),
+                            input_status(
+                                common_data.armor_ac + common_data.shield_ac + common_data.bonus_ac,
+                                true,
+                                |_| None,
+                            ),
                         ],
                     ),
                 ],
